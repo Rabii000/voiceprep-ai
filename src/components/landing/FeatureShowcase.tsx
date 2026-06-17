@@ -1,141 +1,104 @@
-import {
-  Mic2,
-  BarChart3,
-  FileText,
-  Brain,
-  Users,
-  Smartphone,
-} from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+'use client'
 
-const features = [
+import { useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
+
+const bigFeatures = [
   {
-    icon: Mic2,
     tag: 'Flagship',
-    tagColor: 'bg-[#4F46E5] text-white',
-    title: 'Agentic Voice Interviewer',
-    description:
-      'A fully agentic AI interviewer that speaks, listens, probes for deeper answers, and adapts — just like a real interviewer.',
-    bullets: [
-      'ElevenLabs real-time voice synthesis',
-      'Contextual follow-up questions',
-      'Panel simulation with 2 AI voices',
-      'Filler word live detection',
-    ],
+    tagColor: 'bg-[#4F46E5]/10 text-[#4F46E5]',
+    title: 'A real interviewer, not a chatbot',
+    desc: 'Alex, your AI interviewer, speaks in a natural voice, waits for your answer, and digs deeper when you\'re vague. The conversation changes based on what you actually say.',
+    points: ['Natural voice synthesis', 'Follow-ups that push back on weak answers', 'Panel mode: two AI interviewers, one candidate', 'Stress mode: rapid-fire, no pauses'],
+    accent: '#4F46E5',
   },
   {
-    icon: Brain,
     tag: 'Intelligence',
-    tagColor: 'bg-[#10B981] text-white',
-    title: 'Resume + JD Intelligence',
-    description:
-      'Deep document analysis extracts your achievements, maps skill gaps, and generates hyper-personalized question sets.',
-    bullets: [
-      'PDF, DOCX & plain text support',
-      'Gap and alignment matrix',
-      'Difficulty-scored questions (1–5)',
-      'Regenerate, pin, or swap questions',
-    ],
-  },
-  {
-    icon: BarChart3,
-    tag: 'Analytics',
-    tagColor: 'bg-[#F59E0B] text-white',
-    title: 'Multi-Dimensional Scorecard',
-    description:
-      'After every session, get a comprehensive performance report with audio playback, coaching notes, and trend tracking.',
-    bullets: [
-      'Overall score + per-question breakdown',
-      'STAR compliance analysis',
-      'Audio playback with transcript sync',
-      'Session history & progress charts',
-    ],
-  },
-  {
-    icon: FileText,
-    tag: 'Resume',
-    tagColor: 'bg-[#6366f1] text-white',
-    title: 'Resume Optimizer',
-    description:
-      'Built-in ATS scoring, bullet rewriting, and keyword matching against your target JD — all in one workflow.',
-    bullets: [
-      'ATS compatibility score',
-      'STAR/XYZ bullet rewriter',
-      'Keyword gap analysis',
-      'One-click export DOCX/PDF',
-    ],
-  },
-  {
-    icon: Users,
-    tag: 'Community',
-    tagColor: 'bg-[#64748B] text-white',
-    title: 'Social & Community',
-    description:
-      'Anonymous leaderboards, peer review mode, and a crowdsourced company question database.',
-    bullets: [
-      'Weekly industry leaderboards',
-      'Peer answer review',
-      'Real company question bank',
-      'Interview war stories forum',
-    ],
-  },
-  {
-    icon: Smartphone,
-    tag: 'Mobile First',
-    tagColor: 'bg-[#1E1B4B] text-white',
-    title: 'PWA — No App Store Needed',
-    description:
-      'Install directly from your browser. Full voice session support on mobile with dark mode and offline recovery.',
-    bullets: [
-      'Voice-only mode (zero taps)',
-      'Haptic feedback on interactions',
-      'Offline session auto-save',
-      'Dark mode out of the box',
-    ],
+    tagColor: 'bg-[#10B981]/10 text-[#10B981]',
+    title: 'Questions built from your own story',
+    desc: 'We read your resume. Every question references your actual experience, the role\'s real requirements, and the company\'s culture. Nothing generic.',
+    points: ['PDF, DOCX, plain text', 'Skill-gap + alignment matrix', 'Difficulty scoring 1 – 5', 'Pin, swap, or regenerate any question'],
+    accent: '#10B981',
   },
 ]
 
+const smallFeatures = [
+  { title: 'Coaching Scorecard', desc: 'Per-question breakdown, STAR compliance, audio playback, and trend charts — all in one report.', icon: '📊', accent: '#F59E0B' },
+  { title: 'Fluency Coach', desc: 'Upload your Q&A pairs. Your script fades session by session until you can deliver from memory.', icon: '📖', accent: '#6366f1' },
+  { title: 'Shadow Speaking', desc: 'Hear a model answer, then repeat it. Builds rhythm, pacing, and vocabulary muscle memory.', icon: '🔊', accent: '#4F46E5' },
+  { title: 'Live Confidence Meter', desc: 'Real-time gauge that scores your WPM, pause frequency, and filler rate as you speak.', icon: '⚡', accent: '#10B981' },
+  { title: 'Answer Library', desc: 'Star your best takes. Compare against previous sessions to track real delivery improvements.', icon: '⭐', accent: '#F59E0B' },
+  { title: 'Interview Countdown', desc: '7-day prep schedule that auto-builds based on your interview date and readiness gaps.', icon: '📅', accent: '#EF4444' },
+]
+
 export function FeatureShowcase() {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+
   return (
-    <section id="features" className="bg-[#1E1B4B] py-24 px-4">
-      <div className="mx-auto max-w-6xl">
-        <div className="text-center mb-16">
-          <span className="inline-block rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold text-slate-300 uppercase tracking-wider mb-4">
-            Features
-          </span>
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Everything you need to walk in confident
+    <section id="features" ref={ref} className="bg-[#0f0e1a] py-28 px-5 relative overflow-hidden">
+      {/* Subtle background texture */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-1/4 left-1/4 h-[500px] w-[500px] rounded-full bg-[#4F46E5]/6 blur-[100px]" />
+        <div className="absolute bottom-1/4 right-1/4 h-[400px] w-[400px] rounded-full bg-[#10B981]/5 blur-[100px]" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-6xl">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="mb-16"
+        >
+          <p className="text-xs font-semibold text-[#10B981] uppercase tracking-[0.15em] mb-4">Features</p>
+          <h2 className="text-4xl sm:text-5xl font-black text-white leading-[1.1] tracking-tight max-w-xl">
+            Everything in one<br />
+            <span className="shimmer-text">practice loop.</span>
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            VoicePrep AI covers the full prep cycle — from document upload to real-time voice sessions to in-depth coaching.
-          </p>
+        </motion.div>
+
+        {/* Big feature cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+          {bigFeatures.map((f, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: i * 0.1 }}
+              className="group rounded-2xl border border-white/8 bg-white/3 hover:bg-white/5 p-8 transition-all duration-300 hover:border-white/15"
+            >
+              <span className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold mb-5 ${f.tagColor}`}>{f.tag}</span>
+              <h3 className="text-xl font-bold text-white mb-3 leading-snug">{f.title}</h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">{f.desc}</p>
+              <div className="grid grid-cols-2 gap-2">
+                {f.points.map((p, j) => (
+                  <div key={j} className="flex items-start gap-2">
+                    <div className="mt-1 h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: f.accent }} />
+                    <span className="text-xs text-slate-400">{p}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, i) => (
-            <div
+        {/* Small feature grid — 3 cols */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {smallFeatures.map((f, i) => (
+            <motion.div
               key={i}
-              className="rounded-2xl border border-white/10 bg-white/5 p-7 hover:bg-white/8 transition-colors"
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.2 + i * 0.07 }}
+              className="group rounded-xl border border-white/8 bg-white/2 hover:bg-white/5 p-5 transition-all duration-300 hover:border-white/15 cursor-default"
             >
-              <div className="mb-5 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10">
-                  <feature.icon className="h-5 w-5 text-white" />
-                </div>
-                <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${feature.tagColor}`}>
-                  {feature.tag}
-                </span>
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-2xl">{f.icon}</span>
+                <h4 className="text-sm font-bold text-white">{f.title}</h4>
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">{feature.title}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-4">{feature.description}</p>
-              <ul className="space-y-2">
-                {feature.bullets.map((b, j) => (
-                  <li key={j} className="flex items-center gap-2 text-sm text-slate-300">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#10B981] flex-shrink-0" />
-                    {b}
-                  </li>
-                ))}
-              </ul>
-            </div>
+              <p className="text-[13px] text-slate-500 leading-relaxed">{f.desc}</p>
+            </motion.div>
           ))}
         </div>
       </div>

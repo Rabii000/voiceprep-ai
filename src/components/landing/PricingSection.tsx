@@ -10,7 +10,7 @@ const tiers = [
     name: 'Free',
     monthlyPrice: 0,
     annualPrice: 0,
-    description: 'Get a feel for the future of interview prep.',
+    description: 'Try it out and see how it works.',
     cta: 'Start Free',
     ctaHref: '/auth/signup',
     popular: false,

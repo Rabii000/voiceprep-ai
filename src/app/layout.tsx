@@ -16,8 +16,10 @@ export const metadata: Metadata = {
   keywords: ['interview prep', 'AI interview coach', 'mock interview', 'voice interview practice'],
   icons: {
     icon: [
+      { url: '/favicon.ico', sizes: '16x16 32x32', type: 'image/x-icon' },
       { url: '/favicon.svg', type: 'image/svg+xml' },
     ],
+    shortcut: '/favicon.ico',
     apple: '/logo.svg',
   },
   manifest: '/site.webmanifest',

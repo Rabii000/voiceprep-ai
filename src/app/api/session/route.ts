@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { rateLimit } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {
   try {
@@ -8,6 +9,15 @@ export async function POST(req: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // 20 session creates per user per hour
+    const rl = rateLimit(`session-create:${user.id}`, 20, 60 * 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please wait before starting another session.' },
+        { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetInMs / 1000)) } }
+      )
     }
 
     const body = await req.json()
@@ -46,6 +56,14 @@ export async function PATCH(req: NextRequest) {
     }
 
     const { session_id, status, score } = await req.json()
+
+    const VALID_STATUSES = ['setup', 'active', 'completed', 'abandoned']
+    if (!session_id || !VALID_STATUSES.includes(status)) {
+      return NextResponse.json({ error: 'Invalid request.' }, { status: 400 })
+    }
+    if (score !== undefined && (typeof score !== 'number' || score < 0 || score > 100)) {
+      return NextResponse.json({ error: 'Invalid score.' }, { status: 400 })
+    }
 
     const { data, error } = await supabase
       .from('sessions')

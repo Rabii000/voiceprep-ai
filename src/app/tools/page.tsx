@@ -52,7 +52,7 @@ const TOOLS = [
     href: '/session',
     icon: Target,
     label: 'Mock Session',
-    desc: 'Full agentic voice interview powered by ElevenLabs + Claude.',
+    desc: 'Full voice interview with an AI interviewer that listens and responds.',
     color: 'text-[#EF4444]', bg: 'bg-[#EF4444]/10', border: 'border-[#EF4444]/20',
     badge: 'AI',
   },
