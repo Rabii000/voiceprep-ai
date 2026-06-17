@@ -128,7 +128,7 @@ function SegmentRow({
         }`}>
           {isDone ? <CheckCircle2 className="h-3 w-3" /> : index + 1}
         </div>
-        <p className="text-sm text-[#1E1B4B] leading-relaxed">{text}</p>
+        <p className="text-sm text-slate-900 dark:text-white leading-relaxed">{text}</p>
       </div>
     </div>
   )
@@ -234,7 +234,7 @@ export default function ShadowSpeakingPage() {
                 <RotateCcw className="mr-2 h-4 w-4" /> Repeat Session
               </Button>
               <Link href="/fluency">
-                <Button variant="outline" className="border-slate-200 text-[#64748B]">
+                <Button variant="outline" className="border-slate-200 text-slate-500 dark:text-slate-400">
                   <BookOpen className="mr-2 h-4 w-4" /> Fluency Coach
                 </Button>
               </Link>
@@ -304,14 +304,14 @@ export default function ShadowSpeakingPage() {
                     <Button
                       variant="outline"
                       onClick={() => { stopSpeech(); setPhase('repeat') }}
-                      className="border-slate-200 text-[#64748B]"
+                      className="border-slate-200 text-slate-500 dark:text-slate-400"
                     >
                       Skip to Repeat
                     </Button>
                   </div>
                 ) : phase === 'repeat' ? (
                   <div className="space-y-3">
-                    <p className="text-xs text-center text-[#64748B] font-medium">
+                    <p className="text-xs text-center text-slate-500 dark:text-slate-400 font-medium">
                       Now say it yourself — as closely as you can
                     </p>
                     <div className="flex gap-3">
@@ -324,7 +324,7 @@ export default function ShadowSpeakingPage() {
                           : <><Mic className="mr-2 h-4 w-4" /> Record Repeat</>
                         }
                       </Button>
-                      <Button onClick={speakSegment} variant="outline" size="icon" className="border-slate-200 text-[#64748B]" title="Listen again">
+                      <Button onClick={speakSegment} variant="outline" size="icon" className="border-slate-200 text-slate-500 dark:text-slate-400" title="Listen again">
                         <RotateCcw className="h-4 w-4" />
                       </Button>
                     </div>
@@ -347,7 +347,7 @@ export default function ShadowSpeakingPage() {
 
             {/* All segments list */}
             <div className="space-y-2 mb-6">
-              <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wider mb-3">Answer segments</p>
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Answer segments</p>
               {item.segments.map((seg, i) => (
                 <SegmentRow
                   key={i}
@@ -363,13 +363,13 @@ export default function ShadowSpeakingPage() {
             {/* Full answer toggle */}
             <button
               onClick={() => setShowFullAnswer(v => !v)}
-              className="flex items-center gap-2 text-xs text-[#64748B] hover:text-[#1E1B4B] mb-2"
+              className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white mb-2"
             >
               <BookOpen className="h-3.5 w-3.5" />
               {showFullAnswer ? 'Hide' : 'View'} full model answer
             </button>
             {showFullAnswer && (
-              <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 text-sm text-[#64748B] leading-relaxed">
+              <div className="rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 p-4 text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                 {item.modelAnswer}
               </div>
             )}

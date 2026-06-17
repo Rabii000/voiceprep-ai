@@ -39,7 +39,7 @@ function scriptVisibilityForSessions(sessions: number): ScriptVisibility {
 function masteryLabel(m: number) {
   if (m >= 85) return { text: 'Mastered', color: 'text-[#10B981]', bg: 'bg-[#10B981]/10' }
   if (m >= 55) return { text: 'Progressing', color: 'text-[#F59E0B]', bg: 'bg-[#F59E0B]/10' }
-  return { text: 'Learning', color: 'text-[#64748B]', bg: 'bg-[#64748B]/10' }
+  return { text: 'Learning', color: 'text-slate-500 dark:text-slate-400', bg: 'bg-[#64748B]/10' }
 }
 
 // Extract first word of each sentence as keywords for partial-script mode
@@ -163,7 +163,7 @@ function SetupScreen({
           <div key={s.label} className={`rounded-xl p-3 text-center ${s.bg}`}>
             <s.icon className={`mx-auto mb-1.5 h-5 w-5 ${s.color}`} />
             <p className={`text-xs font-bold ${s.color}`}>{s.label}</p>
-            <p className="text-xs text-[#64748B] mt-0.5">{s.desc}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{s.desc}</p>
           </div>
         ))}
       </div>
@@ -175,7 +175,7 @@ function SetupScreen({
       >
         <Upload className="mx-auto mb-1.5 h-5 w-5 text-[#4F46E5]" />
         <p className="text-sm font-medium text-[#4F46E5]">Upload a .txt file</p>
-        <p className="text-xs text-[#64748B] mt-0.5">Format: Q: question / A: answer — one pair per blank line</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Format: Q: question / A: answer — one pair per blank line</p>
       </button>
       <input ref={fileRef} type="file" accept=".txt,.md" className="hidden" onChange={handleFile} />
 
@@ -187,7 +187,7 @@ function SetupScreen({
             <Card key={pair.id} className="border-slate-200 shadow-sm">
               <CardContent className="p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#64748B]">Q{i + 1}</span>
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400">Q{i + 1}</span>
                   <div className="flex items-center gap-2">
                     {pair.sessions > 0 && (
                       <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${ml.bg} ${ml.color}`}>
@@ -223,7 +223,7 @@ function SetupScreen({
       <Button
         variant="outline"
         onClick={addRow}
-        className="w-full mb-4 border-dashed border-slate-300 text-[#64748B] hover:border-[#4F46E5] hover:text-[#4F46E5]"
+        className="w-full mb-4 border-dashed border-slate-300 text-slate-500 dark:text-slate-400 hover:border-[#4F46E5] hover:text-[#4F46E5]"
       >
         <Plus className="mr-2 h-4 w-4" /> Add Q&amp;A Pair
       </Button>
@@ -421,8 +421,8 @@ function ResultsScreen({
         <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#4F46E5]/10">
           <span className="text-3xl font-bold text-[#4F46E5]">{avgMastery}</span>
         </div>
-        <h2 className="text-xl font-bold text-[#1E1B4B]">Session Complete</h2>
-        <p className="text-sm text-[#64748B] mt-1">
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Session Complete</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           {mastered}/{pairs.length} answers mastered · avg mastery {avgMastery}%
         </p>
       </div>
@@ -440,11 +440,11 @@ function ResultsScreen({
                     {p.mastery}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#1E1B4B] truncate">{p.question}</p>
+                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{p.question}</p>
                     <div className="flex items-center gap-2 mt-1.5">
                       <MasteryBar value={p.mastery} />
                     </div>
-                    <p className="text-xs text-[#64748B] mt-1">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                       {p.sessions} sessions · next: {' '}
                       <span className="font-medium">
                         {nextVis === 'full' ? '📖 Full script' : nextVis === 'keywords' ? '🔑 Keywords only' : '🧠 Memory mode'}
@@ -463,7 +463,7 @@ function ResultsScreen({
           <RotateCcw className="mr-2 h-4 w-4" />
           Practice Again
         </Button>
-        <Button variant="outline" onClick={onReset} className="border-slate-200 text-[#64748B]">
+        <Button variant="outline" onClick={onReset} className="border-slate-200 text-slate-500 dark:text-slate-400">
           New Q&amp;A Set
         </Button>
       </div>

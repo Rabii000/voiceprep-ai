@@ -174,7 +174,7 @@ export default function QuickDrillPage() {
                 <div key={s.label} className={`rounded-xl p-3 text-center ${s.bg}`}>
                   <s.icon className={`mx-auto mb-1 h-5 w-5 ${s.color}`} />
                   <p className={`text-xs font-bold ${s.color}`}>{s.label}</p>
-                  <p className="text-xs text-[#64748B]">{s.sub}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{s.sub}</p>
                 </div>
               ))}
             </div>
@@ -200,7 +200,7 @@ export default function QuickDrillPage() {
                   <span className="text-2xl font-bold font-mono" style={{ color: timerColor }}>{timeLeft}</span>
                 </div>
               </div>
-              <span className="text-xs text-[#64748B]">seconds remaining</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">seconds remaining</span>
             </div>
 
             <div className="flex items-center gap-2 mb-4">
@@ -230,7 +230,7 @@ export default function QuickDrillPage() {
                 : <Mic className="h-8 w-8 text-white" />
               }
             </button>
-            <p className="text-center text-xs text-[#64748B]">
+            <p className="text-center text-xs text-slate-500 dark:text-slate-400">
               {isRecording ? 'Recording… tap to stop and rate' : 'Tap to start your answer'}
             </p>
           </div>
@@ -239,8 +239,8 @@ export default function QuickDrillPage() {
         {/* ── RATING ── */}
         {state === 'rating' && current && (
           <div>
-            <h2 className="text-lg font-bold text-[#1E1B4B] mb-2 text-center">How did you do?</h2>
-            <p className="text-sm text-[#64748B] text-center mb-6">"{current.text}"</p>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 text-center">How did you do?</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 text-center mb-6">"{current.text}"</p>
             <div className="space-y-3">
               {[
                 { label: '✅ Nailed it', sub: 'Clear, structured, confident', rating: 'good' as const, color: 'border-[#10B981]/40 hover:bg-[#10B981]/5 text-[#10B981]' },
@@ -250,7 +250,7 @@ export default function QuickDrillPage() {
                 <button key={opt.rating} onClick={() => rate(opt.rating)}
                   className={`w-full rounded-xl border-2 px-5 py-4 text-left transition-all ${opt.color}`}>
                   <p className="font-semibold text-sm">{opt.label}</p>
-                  <p className="text-xs text-[#64748B] mt-0.5">{opt.sub}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{opt.sub}</p>
                 </button>
               ))}
             </div>
@@ -290,7 +290,7 @@ export default function QuickDrillPage() {
                 <p className="text-xs font-semibold text-[#EF4444] mb-1">
                   {retryCount} question{retryCount > 1 ? 's' : ''} need more work
                 </p>
-                <p className="text-xs text-[#64748B]">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Add these to your Fluency Coach Q&amp;A bank for deliberate practice.
                 </p>
               </div>
@@ -301,7 +301,7 @@ export default function QuickDrillPage() {
                 <RotateCcw className="mr-2 h-4 w-4" /> New Drill
               </Button>
               <Link href="/fluency">
-                <Button variant="outline" className="w-full border-slate-200 text-[#64748B]">
+                <Button variant="outline" className="w-full border-slate-200 text-slate-500 dark:text-slate-400">
                   Fluency Coach
                 </Button>
               </Link>

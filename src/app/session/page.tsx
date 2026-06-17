@@ -31,7 +31,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   situational: 'bg-[#10B981]/10 text-[#10B981]',
   technical: 'bg-[#F59E0B]/10 text-[#F59E0B]',
   culture: 'bg-[#6366f1]/10 text-[#6366f1]',
-  weakness: 'bg-[#64748B]/10 text-[#64748B]',
+  weakness: 'bg-[#64748B]/10 text-slate-500 dark:text-slate-400',
   closing: 'bg-[#EF4444]/10 text-[#EF4444]',
 }
 
@@ -87,7 +87,7 @@ export default function SessionSetupPage() {
               <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-colors ${
                 i === step ? 'bg-[#4F46E5] text-white' : i < step ? 'bg-[#10B981] text-white' : 'bg-slate-100 text-slate-400'
               }`}>{i + 1}</div>
-              <span className={`hidden sm:block text-sm ${i === step ? 'font-semibold text-[#1E1B4B]' : 'text-[#64748B]'}`}>{s}</span>
+              <span className={`hidden sm:block text-sm ${i === step ? 'font-semibold text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}>{s}</span>
               {i < STEPS.length - 1 && <ChevronRight className="h-4 w-4 text-slate-300" />}
             </div>
           ))}
@@ -101,8 +101,8 @@ export default function SessionSetupPage() {
         {step === 0 && (
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-[#1E1B4B] mb-2">Upload your documents</h1>
-              <p className="text-[#64748B]">Your resume + the job description = a perfectly tailored interview.</p>
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Upload your documents</h1>
+              <p className="text-slate-500 dark:text-slate-400">Your resume + the job description = a perfectly tailored interview.</p>
             </div>
 
             <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-white p-6">
@@ -111,8 +111,8 @@ export default function SessionSetupPage() {
                   <FileText className="h-5 w-5 text-[#4F46E5]" />
                 </div>
                 <div>
-                  <p className="font-semibold text-[#1E1B4B]">Your Resume</p>
-                  <p className="text-xs text-[#64748B]">Paste the text content of your resume below</p>
+                  <p className="font-semibold text-slate-900 dark:text-white">Your Resume</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Paste the text content of your resume below</p>
                 </div>
               </div>
               <Textarea
@@ -135,8 +135,8 @@ export default function SessionSetupPage() {
                   <Briefcase className="h-5 w-5 text-[#10B981]" />
                 </div>
                 <div>
-                  <p className="font-semibold text-[#1E1B4B]">Job Description</p>
-                  <p className="text-xs text-[#64748B]">Paste the full job description</p>
+                  <p className="font-semibold text-slate-900 dark:text-white">Job Description</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Paste the full job description</p>
                 </div>
               </div>
               <Textarea
@@ -171,8 +171,8 @@ export default function SessionSetupPage() {
         {step === 1 && (
           <div>
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-[#1E1B4B] mb-2">Your question bank</h1>
-              <p className="text-[#64748B]">
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Your question bank</h1>
+              <p className="text-slate-500 dark:text-slate-400">
                 {questions.length} tailored questions generated. Pin to keep, tap × to remove.
               </p>
             </div>
@@ -193,7 +193,7 @@ export default function SessionSetupPage() {
                         </span>
                         <div className="flex items-center gap-0.5">{DIFFICULTY_DOTS(q.difficulty)}</div>
                       </div>
-                      <p className="text-sm text-[#1E1B4B] leading-relaxed">{q.text}</p>
+                      <p className="text-sm text-slate-900 dark:text-white leading-relaxed">{q.text}</p>
                     </div>
                     <div className="flex gap-1.5 flex-shrink-0">
                       <button
@@ -237,8 +237,8 @@ export default function SessionSetupPage() {
         {step === 2 && (
           <div>
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-[#1E1B4B] mb-2">Configure your session</h1>
-              <p className="text-[#64748B]">Choose your settings for today's mock interview.</p>
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Configure your session</h1>
+              <p className="text-slate-500 dark:text-slate-400">Choose your settings for today's mock interview.</p>
             </div>
 
             <div className="space-y-6">
@@ -246,7 +246,7 @@ export default function SessionSetupPage() {
               <div className="rounded-2xl border border-slate-200 bg-white p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <Clock className="h-4 w-4 text-[#4F46E5]" />
-                  <p className="font-semibold text-[#1E1B4B]">Session Duration</p>
+                  <p className="font-semibold text-slate-900 dark:text-white">Session Duration</p>
                 </div>
                 <div className="grid grid-cols-4 gap-2">
                   {[15, 30, 45, 60].map(d => (
@@ -256,7 +256,7 @@ export default function SessionSetupPage() {
                       className={`rounded-xl border-2 py-3 text-sm font-semibold transition-colors ${
                         config.duration === d
                           ? 'border-[#4F46E5] bg-[#4F46E5]/5 text-[#4F46E5]'
-                          : 'border-slate-200 text-[#64748B] hover:border-slate-300'
+                          : 'border-slate-200 text-slate-500 dark:text-slate-400 hover:border-slate-300'
                       }`}
                     >
                       {d} min
@@ -267,7 +267,7 @@ export default function SessionSetupPage() {
 
               {/* Mode */}
               <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                <p className="font-semibold text-[#1E1B4B] mb-4">Interview Mode</p>
+                <p className="font-semibold text-slate-900 dark:text-white mb-4">Interview Mode</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
                     { id: 'solo', label: 'Solo Mode', desc: 'One-on-one with AI interviewer' },
@@ -284,8 +284,8 @@ export default function SessionSetupPage() {
                           : 'border-slate-200 hover:border-slate-300'
                       }`}
                     >
-                      <p className={`text-sm font-semibold ${config.mode === m.id ? 'text-[#4F46E5]' : 'text-[#1E1B4B]'}`}>{m.label}</p>
-                      <p className="text-xs text-[#64748B] mt-0.5">{m.desc}</p>
+                      <p className={`text-sm font-semibold ${config.mode === m.id ? 'text-[#4F46E5]' : 'text-slate-900 dark:text-white'}`}>{m.label}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{m.desc}</p>
                     </button>
                   ))}
                 </div>
@@ -293,7 +293,7 @@ export default function SessionSetupPage() {
 
               {/* Voice */}
               <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                <p className="font-semibold text-[#1E1B4B] mb-4">AI Interviewer Voice</p>
+                <p className="font-semibold text-slate-900 dark:text-white mb-4">AI Interviewer Voice</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {INTERVIEWER_VOICES.map(v => (
                     <button
@@ -311,9 +311,9 @@ export default function SessionSetupPage() {
                         }`}>
                           {v.name[0]}
                         </div>
-                        <p className="text-sm font-semibold text-[#1E1B4B]">{v.name}</p>
+                        <p className="text-sm font-semibold text-slate-900 dark:text-white">{v.name}</p>
                       </div>
-                      <p className="text-xs text-[#64748B]">{v.description}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{v.description}</p>
                     </button>
                   ))}
                 </div>
@@ -322,8 +322,8 @@ export default function SessionSetupPage() {
               {/* Nervous mode toggle */}
               <div className="rounded-2xl border border-slate-200 bg-white p-6 flex items-center justify-between">
                 <div>
-                  <p className="font-semibold text-[#1E1B4B]">Nervous Mode</p>
-                  <p className="text-sm text-[#64748B]">Adds intentional pause and pressure cues</p>
+                  <p className="font-semibold text-slate-900 dark:text-white">Nervous Mode</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Adds intentional pause and pressure cues</p>
                 </div>
                 <button
                   onClick={() => setConfig(c => ({ ...c, nervousMode: !c.nervousMode }))}
@@ -355,8 +355,8 @@ export default function SessionSetupPage() {
         {/* Step 3 — Audio Check */}
         {step === 3 && (
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-[#1E1B4B] mb-2">Mic check</h1>
-            <p className="text-[#64748B] mb-10">Make sure your audio is working before we start.</p>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Mic check</h1>
+            <p className="text-slate-500 dark:text-slate-400 mb-10">Make sure your audio is working before we start.</p>
 
             <div className="mx-auto max-w-sm">
               <div className="rounded-2xl border border-slate-200 bg-white p-8 mb-6">
@@ -379,7 +379,7 @@ export default function SessionSetupPage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-[#64748B] mb-4">Click below to test your microphone</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Click below to test your microphone</p>
                 )}
 
                 <Button

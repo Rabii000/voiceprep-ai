@@ -98,7 +98,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   situational: 'bg-[#10B981]/10 text-[#10B981]',
   technical: 'bg-[#F59E0B]/10 text-[#F59E0B]',
   culture: 'bg-[#6366f1]/10 text-[#6366f1]',
-  weakness: 'bg-[#64748B]/10 text-[#64748B]',
+  weakness: 'bg-[#64748B]/10 text-slate-500 dark:text-slate-400',
 }
 
 function ScoreRing({ score, size = 120 }: { score: number; size?: number }) {
@@ -114,7 +114,7 @@ function ScoreRing({ score, size = 120 }: { score: number; size?: number }) {
         strokeDasharray={`${fill} ${circ}`} strokeLinecap="round"
         style={{ transition: 'stroke-dasharray 1s ease' }}
       />
-      <text x="50" y="56" textAnchor="middle" className="rotate-90" fill="#1E1B4B"
+      <text x="50" y="56" textAnchor="middle" className="rotate-90" fill="currentColor"
         style={{ transform: 'rotate(90deg) translate(0px, -100px)', fontWeight: 700, fontSize: 22 }}>
         {score}
       </text>
@@ -177,11 +177,11 @@ export default function ScorecardPage() {
                     <div className="relative">
                       <ScoreRing score={data.overall} size={140} />
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-4xl font-bold text-[#1E1B4B]">{data.overall}</span>
-                        <span className="text-xs text-[#64748B]">/ 100</span>
+                        <span className="text-4xl font-bold text-slate-900 dark:text-white">{data.overall}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">/ 100</span>
                       </div>
                     </div>
-                    <p className="text-sm font-semibold text-[#1E1B4B] mt-2">Overall Score</p>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white mt-2">Overall Score</p>
                     <Badge className="mt-1 bg-[#10B981]/10 text-[#10B981] border-0">
                       {data.overall >= 80 ? 'Excellent' : data.overall >= 65 ? 'Good' : 'Needs Work'}
                     </Badge>
@@ -196,21 +196,21 @@ export default function ScorecardPage() {
                     ].map(m => (
                       <div key={m.label} className="space-y-1.5">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs text-[#64748B]">{m.label}</span>
-                          <span className="text-xs font-bold text-[#1E1B4B]">{m.value}%</span>
+                          <span className="text-xs text-slate-500 dark:text-slate-400">{m.label}</span>
+                          <span className="text-xs font-bold text-slate-900 dark:text-white">{m.value}%</span>
                         </div>
                         <Progress value={m.value} className="h-1.5" />
                       </div>
                     ))}
 
                     <div className="space-y-1">
-                      <p className="text-xs text-[#64748B]">Filler Word Rate</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">Filler Word Rate</p>
                       <p className={`text-lg font-bold ${data.filler_rate < 3 ? 'text-[#10B981]' : data.filler_rate < 6 ? 'text-[#F59E0B]' : 'text-[#EF4444]'}`}>
                         {data.filler_rate}%
                       </p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-xs text-[#64748B]">Questions Skipped</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">Questions Skipped</p>
                       <p className="text-lg font-bold text-[#EF4444]">{data.skipped}</p>
                     </div>
                   </div>
@@ -231,7 +231,7 @@ export default function ScorecardPage() {
                   {data.questions.filter(q => !q.skipped).sort((a, b) => b.score - a.score).slice(0, 3).map(q => (
                     <div key={q.id} className="flex items-start gap-2">
                       <span className="text-xs font-bold text-[#10B981] mt-0.5">{q.score}</span>
-                      <p className="text-xs text-[#1E1B4B] leading-relaxed">{q.text}</p>
+                      <p className="text-xs text-slate-900 dark:text-white leading-relaxed">{q.text}</p>
                     </div>
                   ))}
                 </CardContent>
@@ -248,7 +248,7 @@ export default function ScorecardPage() {
                   {data.questions.sort((a, b) => a.score - b.score).slice(0, 3).map(q => (
                     <div key={q.id} className="flex items-start gap-2">
                       <span className="text-xs font-bold text-[#F59E0B] mt-0.5">{q.skipped ? '–' : q.score}</span>
-                      <p className="text-xs text-[#1E1B4B] leading-relaxed">{q.text}</p>
+                      <p className="text-xs text-slate-900 dark:text-white leading-relaxed">{q.text}</p>
                     </div>
                   ))}
                 </CardContent>
@@ -277,13 +277,13 @@ export default function ScorecardPage() {
                           <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${CATEGORY_COLORS[q.category] || 'bg-slate-100 text-slate-600'}`}>
                             {q.category}
                           </span>
-                          <span className="text-xs text-[#64748B]">Q{i + 1}</span>
+                          <span className="text-xs text-slate-500 dark:text-slate-400">Q{i + 1}</span>
                           {q.skipped && <Badge className="bg-slate-100 text-slate-500 border-0 text-xs">Skipped</Badge>}
                         </div>
 
-                        <p className="text-sm font-medium text-[#1E1B4B] mb-3">"{q.text}"</p>
+                        <p className="text-sm font-medium text-slate-900 dark:text-white mb-3">"{q.text}"</p>
 
-                        <p className="text-sm text-[#64748B] mb-4 leading-relaxed">{q.feedback}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">{q.feedback}</p>
 
                         {(q.strengths.length > 0 || q.improvements.length > 0) && (
                           <div className="grid sm:grid-cols-2 gap-4 mb-4">
@@ -292,7 +292,7 @@ export default function ScorecardPage() {
                                 <p className="text-xs font-semibold text-[#10B981] mb-1.5">What worked</p>
                                 <ul className="space-y-1">
                                   {q.strengths.map((s, j) => (
-                                    <li key={j} className="flex items-start gap-1.5 text-xs text-[#1E1B4B]">
+                                    <li key={j} className="flex items-start gap-1.5 text-xs text-slate-900 dark:text-white">
                                       <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[#10B981] flex-shrink-0" />
                                       {s}
                                     </li>
@@ -305,7 +305,7 @@ export default function ScorecardPage() {
                                 <p className="text-xs font-semibold text-[#F59E0B] mb-1.5">Improve this</p>
                                 <ul className="space-y-1">
                                   {q.improvements.map((s, j) => (
-                                    <li key={j} className="flex items-start gap-1.5 text-xs text-[#1E1B4B]">
+                                    <li key={j} className="flex items-start gap-1.5 text-xs text-slate-900 dark:text-white">
                                       <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[#F59E0B] flex-shrink-0" />
                                       {s}
                                     </li>
@@ -319,7 +319,7 @@ export default function ScorecardPage() {
                         {q.suggested_rewrite && (
                           <div className="rounded-lg bg-[#4F46E5]/5 border border-[#4F46E5]/10 p-3">
                             <p className="text-xs font-semibold text-[#4F46E5] mb-1">Suggested STAR rewrite</p>
-                            <p className="text-xs text-[#1E1B4B] leading-relaxed italic">"{q.suggested_rewrite}"</p>
+                            <p className="text-xs text-slate-900 dark:text-white leading-relaxed italic">"{q.suggested_rewrite}"</p>
                           </div>
                         )}
                       </div>
@@ -334,7 +334,7 @@ export default function ScorecardPage() {
           <TabsContent value="audio">
             <Card className="border-slate-200 shadow-sm">
               <CardHeader>
-                <CardTitle className="text-base text-[#1E1B4B]">Full Session Playback</CardTitle>
+                <CardTitle className="text-base text-slate-900 dark:text-white">Full Session Playback</CardTitle>
               </CardHeader>
               <CardContent>
                 {/* Audio player mockup */}
@@ -368,7 +368,7 @@ export default function ScorecardPage() {
                 </div>
 
                 {/* Jump to question markers */}
-                <p className="text-sm font-semibold text-[#1E1B4B] mb-3">Jump to Question</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Jump to Question</p>
                 <div className="space-y-2">
                   {data.questions.map((q, i) => (
                     <button
@@ -380,11 +380,11 @@ export default function ScorecardPage() {
                           : 'border-slate-100 hover:border-slate-200 hover:bg-slate-50'
                       }`}
                     >
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-[#64748B] flex-shrink-0">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-500 dark:text-slate-400 flex-shrink-0">
                         {playingId === q.id ? <Volume2 className="h-3 w-3 text-[#4F46E5]" /> : i + 1}
                       </div>
-                      <span className="text-sm text-[#1E1B4B] truncate flex-1">{q.text}</span>
-                      <span className="text-xs text-[#64748B] font-mono">{`0${i + 1}:${String(i * 4 + 12).padStart(2, '0')}`}</span>
+                      <span className="text-sm text-slate-900 dark:text-white truncate flex-1">{q.text}</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{`0${i + 1}:${String(i * 4 + 12).padStart(2, '0')}`}</span>
                     </button>
                   ))}
                 </div>
@@ -395,14 +395,14 @@ export default function ScorecardPage() {
           {/* COMPARE TAB */}
           <TabsContent value="compare">
             <div className="space-y-4">
-              <div className="rounded-xl bg-[#4F46E5]/5 border border-[#4F46E5]/10 p-3 text-xs text-[#64748B]">
+              <div className="rounded-xl bg-[#4F46E5]/5 border border-[#4F46E5]/10 p-3 text-xs text-slate-500 dark:text-slate-400">
                 Side-by-side view of your spoken answer versus the AI-generated model answer.
                 Word-level differences are highlighted.
               </div>
               {data.questions.filter(q => !q.skipped).slice(0, 3).map(q => (
                 <Card key={q.id} className="border-slate-200 shadow-sm">
                   <CardContent className="p-5">
-                    <p className="text-xs font-semibold text-[#64748B] mb-3">"{q.text}"</p>
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3">"{q.text}"</p>
                     <div className="grid sm:grid-cols-2 gap-4">
                       {/* Your answer */}
                       <div>
@@ -415,7 +415,7 @@ export default function ScorecardPage() {
                             'bg-[#EF4444]/10 text-[#EF4444]'
                           }`}>{q.score}</span>
                         </div>
-                        <div className="rounded-lg bg-slate-50 border border-slate-100 p-3 text-xs text-[#1E1B4B] leading-relaxed min-h-[80px]">
+                        <div className="rounded-lg bg-slate-50 border border-slate-100 p-3 text-xs text-slate-900 dark:text-white leading-relaxed min-h-[80px]">
                           {q.answer || <span className="text-slate-400 italic">No transcript recorded</span>}
                         </div>
                       </div>
@@ -426,7 +426,7 @@ export default function ScorecardPage() {
                           <p className="text-xs font-bold text-[#10B981]">Model answer</p>
                           <span className="ml-auto rounded-full px-2 py-0.5 text-xs font-bold bg-[#10B981]/10 text-[#10B981]">100</span>
                         </div>
-                        <div className="rounded-lg bg-[#10B981]/5 border border-[#10B981]/10 p-3 text-xs text-[#1E1B4B] leading-relaxed min-h-[80px]">
+                        <div className="rounded-lg bg-[#10B981]/5 border border-[#10B981]/10 p-3 text-xs text-slate-900 dark:text-white leading-relaxed min-h-[80px]">
                           {q.suggested_rewrite ??
                             "Strong, structured response that opens with context, demonstrates clear action using the STAR framework, and closes with a quantified result. The tone is confident without being arrogant."
                           }
@@ -437,7 +437,7 @@ export default function ScorecardPage() {
                     {q.improvements.length > 0 && (
                       <div className="mt-3 pt-3 border-t border-slate-100">
                         <p className="text-xs font-semibold text-[#F59E0B] mb-1">Key gap</p>
-                        <p className="text-xs text-[#64748B]">{q.improvements[0]}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">{q.improvements[0]}</p>
                       </div>
                     )}
                   </CardContent>
@@ -451,19 +451,19 @@ export default function ScorecardPage() {
             <div className="space-y-4">
               <Card className="border-[#4F46E5]/20 shadow-sm">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-base text-[#1E1B4B] flex items-center gap-2">
+                  <CardTitle className="text-base text-slate-900 dark:text-white flex items-center gap-2">
                     <Award className="h-4 w-4 text-[#4F46E5]" />
                     AI Coach Summary
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-[#1E1B4B] leading-relaxed">{data.coach_summary}</p>
+                  <p className="text-sm text-slate-900 dark:text-white leading-relaxed">{data.coach_summary}</p>
                 </CardContent>
               </Card>
 
               <Card className="border-slate-200 shadow-sm">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-bold text-[#1E1B4B]">Recommended Next Steps</CardTitle>
+                  <CardTitle className="text-sm font-bold text-slate-900 dark:text-white">Recommended Next Steps</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -479,7 +479,7 @@ export default function ScorecardPage() {
                           step.priority === 'Medium' ? 'bg-[#F59E0B]/10 text-[#F59E0B]' :
                           'bg-[#10B981]/10 text-[#10B981]'
                         }`}>{step.priority}</span>
-                        <p className="text-sm text-[#1E1B4B]">{step.text}</p>
+                        <p className="text-sm text-slate-900 dark:text-white">{step.text}</p>
                       </div>
                     ))}
                   </div>
@@ -493,7 +493,7 @@ export default function ScorecardPage() {
                     Practice Again
                   </Button>
                 </Link>
-                <Button variant="outline" className="border-slate-200 text-[#64748B]">
+                <Button variant="outline" className="border-slate-200 text-slate-500 dark:text-slate-400">
                   Share Scorecard
                 </Button>
               </div>

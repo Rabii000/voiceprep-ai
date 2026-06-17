@@ -173,7 +173,7 @@ export default function AnswerLibraryPage() {
         {/* Explainer */}
         <div className="mb-5 rounded-xl bg-[#F59E0B]/5 border border-[#F59E0B]/20 p-4 flex items-start gap-3">
           <Star className="h-4 w-4 text-[#F59E0B] flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-[#1E1B4B] leading-relaxed">
+          <p className="text-xs text-slate-900 dark:text-white leading-relaxed">
             <strong>Gold Masters</strong> are your personal-best deliveries — saved here as the reference
             standard to beat. Star any answer to promote it. Use them in Shadow Speaking to hear your own
             best version before repeating.
@@ -189,7 +189,7 @@ export default function AnswerLibraryPage() {
               className="pl-9 h-9 text-sm border-slate-200" />
           </div>
           <button onClick={() => setShowGoldOnly(v => !v)}
-            className={`flex items-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition-colors ${showGoldOnly ? 'border-[#F59E0B] bg-[#F59E0B] text-white' : 'border-slate-200 text-[#64748B] hover:border-[#F59E0B]/40'}`}>
+            className={`flex items-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition-colors ${showGoldOnly ? 'border-[#F59E0B] bg-[#F59E0B] text-white' : 'border-slate-200 text-slate-500 dark:text-slate-400 hover:border-[#F59E0B]/40'}`}>
             <Star className="h-3.5 w-3.5" /> Gold only
           </button>
         </div>
@@ -198,7 +198,7 @@ export default function AnswerLibraryPage() {
         <div className="flex gap-2 overflow-x-auto pb-1 mb-5 scrollbar-hide">
           {CATEGORIES.map(c => (
             <button key={c} onClick={() => setCat(c)}
-              className={`flex-shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${cat === c ? 'bg-[#4F46E5] text-white' : 'bg-white border border-slate-200 text-[#64748B] hover:border-[#4F46E5]/40'}`}>
+              className={`flex-shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${cat === c ? 'bg-[#4F46E5] text-white' : 'bg-white border border-slate-200 text-slate-500 dark:text-slate-400 hover:border-[#4F46E5]/40'}`}>
               {c.charAt(0).toUpperCase() + c.slice(1)}
             </button>
           ))}
@@ -206,7 +206,7 @@ export default function AnswerLibraryPage() {
 
         {/* Entries */}
         {filtered.length === 0 ? (
-          <div className="text-center py-16 text-sm text-[#64748B]">No answers match your filters.</div>
+          <div className="text-center py-16 text-sm text-slate-500 dark:text-slate-400">No answers match your filters.</div>
         ) : (
           <div className="space-y-3">
             {filtered.map(a => {
@@ -246,8 +246,8 @@ export default function AnswerLibraryPage() {
                             </span>
                           )}
                         </div>
-                        <p className="text-sm font-medium text-[#1E1B4B] leading-snug">{a.question}</p>
-                        <p className="text-xs text-[#64748B] mt-0.5">{a.sessionCompany} · {a.date} · {Math.floor(a.duration / 60)}:{String(a.duration % 60).padStart(2, '0')}</p>
+                        <p className="text-sm font-medium text-slate-900 dark:text-white leading-snug">{a.question}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{a.sessionCompany} · {a.date} · {Math.floor(a.duration / 60)}:{String(a.duration % 60).padStart(2, '0')}</p>
                       </div>
 
                       {/* Actions */}
@@ -283,8 +283,8 @@ export default function AnswerLibraryPage() {
                         { label: 'WPM', value: String(a.wpm) },
                       ].map(m => (
                         <div key={m.label} className="py-2 text-center">
-                          <p className="text-xs font-bold text-[#1E1B4B]">{m.value}</p>
-                          <p className="text-xs text-[#64748B]">{m.label}</p>
+                          <p className="text-xs font-bold text-slate-900 dark:text-white">{m.value}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">{m.label}</p>
                         </div>
                       ))}
                     </div>
@@ -292,13 +292,13 @@ export default function AnswerLibraryPage() {
                     {/* Transcript expand */}
                     <div className="border-t border-slate-100">
                       <button onClick={() => setExpandedId(isExpanded ? null : a.id)}
-                        className="w-full flex items-center justify-between px-4 py-2.5 text-xs text-[#64748B] hover:text-[#1E1B4B] transition-colors">
+                        className="w-full flex items-center justify-between px-4 py-2.5 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white transition-colors">
                         <span>View transcript</span>
                         {isExpanded ? <ChevronLeft className="h-3.5 w-3.5 rotate-90" /> : <ChevronRight className="h-3.5 w-3.5 rotate-90" />}
                       </button>
                       {isExpanded && (
                         <div className="px-4 pb-4">
-                          <p className="text-xs text-[#64748B] leading-relaxed italic">"{a.transcript}"</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed italic">"{a.transcript}"</p>
                         </div>
                       )}
                     </div>
