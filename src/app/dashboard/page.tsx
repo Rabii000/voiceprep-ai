@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import {
   Mic, Plus, TrendingUp, Calendar, Flame, Clock,
-  ChevronRight, BarChart3, Target, Award
+  ChevronRight, BarChart3, Target, Award, BookOpen
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -46,6 +46,7 @@ export default function DashboardPage() {
             {[
               { label: 'Dashboard', icon: BarChart3, href: '/dashboard', active: true },
               { label: 'New Session', icon: Plus, href: '/session', active: false },
+              { label: 'Fluency Coach', icon: BookOpen, href: '/fluency', active: false },
               { label: 'Progress', icon: TrendingUp, href: '/dashboard/progress', active: false },
               { label: 'Schedule', icon: Calendar, href: '/dashboard/schedule', active: false },
               { label: 'Achievements', icon: Award, href: '/dashboard/achievements', active: false },
@@ -186,6 +187,41 @@ export default function DashboardPage() {
                       </button>
                     </Link>
                   ))}
+                </CardContent>
+              </Card>
+
+              {/* Fluency Coach card */}
+              <Card className="border-[#4F46E5]/20 bg-gradient-to-br from-[#4F46E5]/5 to-[#10B981]/5 shadow-sm">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base font-bold text-[#1E1B4B] flex items-center gap-2">
+                    <BookOpen className="h-4 w-4 text-[#4F46E5]" />
+                    Fluency Coach
+                    <span className="ml-auto rounded-full bg-[#4F46E5]/10 px-2 py-0.5 text-xs font-semibold text-[#4F46E5]">New</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xs text-[#64748B] mb-3 leading-relaxed">
+                    Upload your prepared Q&amp;A pairs and practice reading them aloud. Your script
+                    gradually fades over sessions until you deliver every answer from memory.
+                  </p>
+                  <div className="grid grid-cols-3 gap-1.5 mb-4">
+                    {[
+                      { label: 'Sessions 1–2', sub: 'Full script', color: 'bg-[#4F46E5]/10 text-[#4F46E5]' },
+                      { label: 'Sessions 3–4', sub: 'Keywords', color: 'bg-[#F59E0B]/10 text-[#F59E0B]' },
+                      { label: 'Session 5+', sub: 'Memory', color: 'bg-[#10B981]/10 text-[#10B981]' },
+                    ].map(s => (
+                      <div key={s.label} className={`rounded-lg p-2 text-center ${s.color}`}>
+                        <p className="text-xs font-bold">{s.label}</p>
+                        <p className="text-xs opacity-70">{s.sub}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <Link href="/fluency">
+                    <Button className="w-full bg-[#4F46E5] hover:bg-[#4338CA] text-white text-sm h-9">
+                      <BookOpen className="mr-1.5 h-3.5 w-3.5" />
+                      Open Fluency Coach
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             </div>

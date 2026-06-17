@@ -1,0 +1,21 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#3730A3"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+  <!-- Capsule/bubble -->
+  <rect x="9" y="5" width="14" height="16" rx="7" fill="white" opacity="0.97"/>
+  <!-- Tail -->
+  <path d="M 11 19 L 9 24 L 14.5 21" fill="white" opacity="0.97"/>
+  <!-- Bars -->
+  <rect x="11" y="14" width="2" height="4" rx="1" fill="#10B981"/>
+  <rect x="14" y="12" width="2" height="6" rx="1" fill="#10B981"/>
+  <rect x="17" y="10" width="2" height="8" rx="1" fill="#4F46E5"/>
+  <rect x="20" y="12" width="2" height="6" rx="1" fill="#10B981"/>
+  <!-- Stand -->
+  <rect x="15.5" y="21" width="2" height="4" rx="1" fill="white" opacity="0.9"/>
+  <rect x="12" y="24" width="8" height="2" rx="1" fill="white" opacity="0.9"/>
+</svg>

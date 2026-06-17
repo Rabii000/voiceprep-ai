@@ -1,0 +1,14 @@
+{
+  "name": "VoicePrep AI",
+  "short_name": "VoicePrep",
+  "description": "AI-powered voice mock interview coach",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1E1B4B",
+  "theme_color": "#1E1B4B",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "/logo.svg",    "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
