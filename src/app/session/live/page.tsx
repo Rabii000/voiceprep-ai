@@ -8,6 +8,8 @@ import {
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
+import ConfidenceMeter from '@/components/ConfidenceMeter'
+import PronunciationCoach from '@/components/PronunciationCoach'
 
 const MOCK_QUESTIONS = [
   "Tell me about yourself and what brought you to apply for this role at Stripe.",
@@ -220,8 +222,8 @@ export default function LiveSessionPage() {
             </div>
           </div>
 
-          {/* Live metrics */}
-          <div className="mt-8 flex items-center gap-6 text-sm">
+          {/* Live metrics row */}
+          <div className="mt-6 flex items-center gap-6 text-sm">
             <div className="text-center">
               <p className="text-xs text-slate-500 mb-0.5">Filler Words</p>
               <p className={`font-bold font-mono ${fillerCount > 5 ? 'text-[#EF4444]' : fillerCount > 2 ? 'text-[#F59E0B]' : 'text-[#10B981]'}`}>
@@ -238,6 +240,11 @@ export default function LiveSessionPage() {
               <p className="text-xs text-slate-500 mb-0.5">STAR</p>
               <p className="font-bold font-mono text-[#4F46E5]">Partial</p>
             </div>
+          </div>
+
+          {/* Confidence Meter widget */}
+          <div className="mt-5">
+            <ConfidenceMeter isActive={isListening} wpm={148} pauseFreq={1.2} fillerRate={fillerCount * 0.8} />
           </div>
 
           {/* Controls */}
@@ -279,6 +286,22 @@ export default function LiveSessionPage() {
             ) : (
               <p className="text-xs text-slate-600 italic">Transcript will appear here as you speak...</p>
             )}
+          </div>
+
+          {/* Pronunciation coach panel */}
+          <div className="border-t border-white/10 p-3">
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Pronunciation Flags</p>
+            <div className="space-y-1.5">
+              {[
+                { word: 'specifically', count: 3 },
+                { word: 'prioritisation', count: 2 },
+              ].map(w => (
+                <div key={w.word} className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-1.5">
+                  <span className="text-xs text-slate-300 font-mono">{w.word}</span>
+                  <span className="text-xs text-[#F59E0B] font-bold">{w.count}×</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

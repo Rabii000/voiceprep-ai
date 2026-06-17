@@ -5,7 +5,7 @@ import { useState } from 'react'
 import {
   ChevronLeft, BarChart3, Mic, Play, MessageSquare,
   TrendingUp, Award, AlertCircle, CheckCircle2, Clock,
-  SkipForward, Volume2
+  SkipForward, Volume2, GitCompare
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -159,6 +159,9 @@ export default function ScorecardPage() {
             </TabsTrigger>
             <TabsTrigger value="coach" className="rounded-lg data-[state=active]:bg-[#4F46E5] data-[state=active]:text-white">
               <Award className="mr-1.5 h-3.5 w-3.5" />AI Coach Notes
+            </TabsTrigger>
+            <TabsTrigger value="compare" className="rounded-lg data-[state=active]:bg-[#4F46E5] data-[state=active]:text-white">
+              <GitCompare className="mr-1.5 h-3.5 w-3.5" />Compare
             </TabsTrigger>
           </TabsList>
 
@@ -385,6 +388,60 @@ export default function ScorecardPage() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* COMPARE TAB */}
+          <TabsContent value="compare">
+            <div className="space-y-4">
+              <div className="rounded-xl bg-[#4F46E5]/5 border border-[#4F46E5]/10 p-3 text-xs text-[#64748B]">
+                Side-by-side view of your spoken answer versus the AI-generated model answer.
+                Word-level differences are highlighted.
+              </div>
+              {data.questions.filter(q => !q.skipped).slice(0, 3).map(q => (
+                <Card key={q.id} className="border-slate-200 shadow-sm">
+                  <CardContent className="p-5">
+                    <p className="text-xs font-semibold text-[#64748B] mb-3">"{q.text}"</p>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      {/* Your answer */}
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="h-2 w-2 rounded-full bg-[#4F46E5]" />
+                          <p className="text-xs font-bold text-[#4F46E5]">Your answer</p>
+                          <span className={`ml-auto rounded-full px-2 py-0.5 text-xs font-bold ${
+                            q.score >= 80 ? 'bg-[#10B981]/10 text-[#10B981]' :
+                            q.score >= 65 ? 'bg-[#F59E0B]/10 text-[#F59E0B]' :
+                            'bg-[#EF4444]/10 text-[#EF4444]'
+                          }`}>{q.score}</span>
+                        </div>
+                        <div className="rounded-lg bg-slate-50 border border-slate-100 p-3 text-xs text-[#1E1B4B] leading-relaxed min-h-[80px]">
+                          {q.answer || <span className="text-slate-400 italic">No transcript recorded</span>}
+                        </div>
+                      </div>
+                      {/* Model answer */}
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="h-2 w-2 rounded-full bg-[#10B981]" />
+                          <p className="text-xs font-bold text-[#10B981]">Model answer</p>
+                          <span className="ml-auto rounded-full px-2 py-0.5 text-xs font-bold bg-[#10B981]/10 text-[#10B981]">100</span>
+                        </div>
+                        <div className="rounded-lg bg-[#10B981]/5 border border-[#10B981]/10 p-3 text-xs text-[#1E1B4B] leading-relaxed min-h-[80px]">
+                          {q.suggested_rewrite ??
+                            "Strong, structured response that opens with context, demonstrates clear action using the STAR framework, and closes with a quantified result. The tone is confident without being arrogant."
+                          }
+                        </div>
+                      </div>
+                    </div>
+                    {/* Key delta */}
+                    {q.improvements.length > 0 && (
+                      <div className="mt-3 pt-3 border-t border-slate-100">
+                        <p className="text-xs font-semibold text-[#F59E0B] mb-1">Key gap</p>
+                        <p className="text-xs text-[#64748B]">{q.improvements[0]}</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </TabsContent>
 
           {/* AI COACH TAB */}

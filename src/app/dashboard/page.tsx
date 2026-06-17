@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import {
   Mic, Plus, TrendingUp, Calendar, Flame, Clock,
-  ChevronRight, BarChart3, Target, Award, BookOpen
+  ChevronRight, BarChart3, Target, Award, BookOpen,
+  Repeat2, Zap, Star, Grid3x3
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -46,9 +47,13 @@ export default function DashboardPage() {
             {[
               { label: 'Dashboard', icon: BarChart3, href: '/dashboard', active: true },
               { label: 'New Session', icon: Plus, href: '/session', active: false },
+              { label: 'Practice Hub', icon: Grid3x3, href: '/tools', active: false },
               { label: 'Fluency Coach', icon: BookOpen, href: '/fluency', active: false },
+              { label: 'Shadow Speaking', icon: Repeat2, href: '/shadow', active: false },
+              { label: 'Quick Drill', icon: Zap, href: '/drill', active: false },
+              { label: 'Answer Library', icon: Star, href: '/library', active: false },
+              { label: 'Interview Countdown', icon: Calendar, href: '/countdown', active: false },
               { label: 'Progress', icon: TrendingUp, href: '/dashboard/progress', active: false },
-              { label: 'Schedule', icon: Calendar, href: '/dashboard/schedule', active: false },
               { label: 'Achievements', icon: Award, href: '/dashboard/achievements', active: false },
             ].map(item => (
               <Link
