@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
+import { AppShell } from '@/components/AppShell'
 
 interface AnswerEntry {
   id: string
@@ -159,21 +160,16 @@ export default function AnswerLibraryPage() {
   const goldCount = library.filter(a => a.isGoldMaster).length
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur-sm px-4 py-3 flex items-center gap-3">
-        <Link href="/dashboard" className="flex items-center gap-1.5 text-sm text-[#64748B] hover:text-[#1E1B4B]">
-          <ChevronLeft className="h-4 w-4" /> Dashboard
-        </Link>
-        <span className="text-slate-200">·</span>
-        <Star className="h-4 w-4 text-[#F59E0B]" />
-        <span className="text-sm font-semibold text-[#1E1B4B]">Answer Library</span>
-        <Badge className="ml-auto bg-[#F59E0B]/10 text-[#F59E0B] border-0 text-xs">
-          {goldCount} gold master{goldCount !== 1 ? 's' : ''}
-        </Badge>
-      </header>
+    <AppShell>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0a0f]">
 
       <div className="mx-auto max-w-2xl px-4 py-6">
+        <div className="flex items-center justify-between mb-5">
+          <h1 className="text-lg font-bold text-slate-900 dark:text-white">Answer Library</h1>
+          <Badge className="bg-[#F59E0B]/10 text-[#F59E0B] border-0 text-xs">
+            {goldCount} gold master{goldCount !== 1 ? 's' : ''}
+          </Badge>
+        </div>
         {/* Explainer */}
         <div className="mb-5 rounded-xl bg-[#F59E0B]/5 border border-[#F59E0B]/20 p-4 flex items-start gap-3">
           <Star className="h-4 w-4 text-[#F59E0B] flex-shrink-0 mt-0.5" />
@@ -217,7 +213,7 @@ export default function AnswerLibraryPage() {
               const isPlaying = playingId === a.id
               const isExpanded = expandedId === a.id
               return (
-                <Card key={a.id} className={`border shadow-sm transition-all ${a.isGoldMaster ? 'border-[#F59E0B]/40' : 'border-slate-200'}`}>
+                <Card key={a.id} className={`border shadow-sm transition-all ${a.isGoldMaster ? 'border-[#F59E0B]/40' : 'border-slate-200 dark:border-slate-800 dark:bg-slate-900'}`}>
                   <CardContent className="p-0">
                     {/* Top row */}
                     <div className="flex items-start gap-3 p-4">
@@ -314,5 +310,6 @@ export default function AnswerLibraryPage() {
         )}
       </div>
     </div>
+    </AppShell>
   )
 }

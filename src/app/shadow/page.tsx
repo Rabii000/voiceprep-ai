@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import { AppShell } from '@/components/AppShell'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -207,32 +208,25 @@ export default function ShadowSpeakingPage() {
   const allDone = completedQuestions.size === SHADOW_ITEMS.length
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur-sm px-4 py-3 flex items-center gap-3">
-        <Link href="/dashboard" className="flex items-center gap-1.5 text-sm text-[#64748B] hover:text-[#1E1B4B]">
-          <ChevronLeft className="h-4 w-4" /> Dashboard
-        </Link>
-        <span className="text-slate-200">·</span>
-        <div className="flex items-center gap-2">
-          <Repeat2 className="h-4 w-4 text-[#4F46E5]" />
-          <span className="text-sm font-semibold text-[#1E1B4B]">Shadow Speaking</span>
-        </div>
-        <div className="ml-auto flex items-center gap-3">
-          <span className="text-xs text-[#64748B] font-mono">{questionIdx + 1}/{SHADOW_ITEMS.length}</span>
-          <Progress value={progress} className="w-20 h-1.5" />
-        </div>
-      </header>
+    <AppShell>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0a0f]">
 
       <div className="mx-auto max-w-xl px-4 py-8">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-lg font-bold text-slate-900 dark:text-white">Shadow Speaking</h1>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{questionIdx + 1}/{SHADOW_ITEMS.length}</span>
+            <Progress value={progress} className="w-20 h-1.5" />
+          </div>
+        </div>
         {allDone ? (
           /* ── Completion screen ── */
           <div className="text-center py-16">
             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#10B981]/10">
               <CheckCircle2 className="h-10 w-10 text-[#10B981]" />
             </div>
-            <h2 className="text-2xl font-bold text-[#1E1B4B] mb-2">All answers shadowed!</h2>
-            <p className="text-sm text-[#64748B] mb-8">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">All answers shadowed!</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-8">
               You've completed one full shadow session. Repeat daily until delivery feels effortless.
             </p>
             <div className="flex gap-3 justify-center">
@@ -260,7 +254,7 @@ export default function ShadowSpeakingPage() {
                   </Badge>
                 )}
               </div>
-              <h2 className="text-xl font-bold text-[#1E1B4B]">"{item.question}"</h2>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">"{item.question}"</h2>
             </div>
 
             {/* Phase indicator */}
@@ -279,13 +273,13 @@ export default function ShadowSpeakingPage() {
             </div>
 
             {/* Current segment spotlight */}
-            <Card className={`mb-6 border-2 transition-all ${
+            <Card className={`mb-6 border-2 dark:bg-slate-900 transition-all ${
               phase === 'listen' ? 'border-[#4F46E5]/30' :
               phase === 'repeat' ? 'border-[#F59E0B]/30' :
               'border-[#10B981]/30'
             }`}>
               <CardContent className="p-6">
-                <p className="text-base text-[#1E1B4B] leading-relaxed font-medium mb-5">
+                <p className="text-base text-slate-900 dark:text-white leading-relaxed font-medium mb-5">
                   "{segment}"
                 </p>
 
@@ -383,5 +377,6 @@ export default function ShadowSpeakingPage() {
         )}
       </div>
     </div>
+    </AppShell>
   )
 }

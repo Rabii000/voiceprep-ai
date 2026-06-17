@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { INTERVIEWER_VOICES } from '@/types'
+import { AppShell } from '@/components/AppShell'
 
 const STEPS = ['Documents', 'Questions', 'Configure', 'Audio Check']
 
@@ -72,10 +73,11 @@ export default function SessionSetupPage() {
   const startSession = () => router.push('/session/live')
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <AppShell>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0a0f]">
       {/* Top bar */}
-      <header className="border-b border-slate-200 bg-white px-6 py-4 flex items-center justify-between">
-        <Link href="/dashboard" className="flex items-center gap-2 text-sm text-[#64748B] hover:text-[#1E1B4B]">
+      <header className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111118] px-6 py-4 flex items-center justify-between">
+        <Link href="/dashboard" className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
           <ChevronLeft className="h-4 w-4" />
           Dashboard
         </Link>
@@ -415,5 +417,6 @@ export default function SessionSetupPage() {
         )}
       </div>
     </div>
+    </AppShell>
   )
 }

@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Textarea } from '@/components/ui/textarea'
+import { AppShell } from '@/components/AppShell'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -145,8 +146,8 @@ function SetupScreen({
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#4F46E5]/10">
           <BookOpen className="h-7 w-7 text-[#4F46E5]" />
         </div>
-        <h1 className="text-2xl font-bold text-[#1E1B4B]">Fluency Coach</h1>
-        <p className="mt-2 text-sm text-[#64748B] max-w-md mx-auto">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Fluency Coach</h1>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
           Upload your prepared Q&amp;A pairs. Practice reading your answers aloud, then watch your
           script gradually fade as you build mastery — until you can deliver every answer cold.
         </p>
@@ -477,22 +478,9 @@ export default function FluencyCoachPage() {
   const [pairs, setPairs] = useState<QAPair[]>(SEED)
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Top nav — only show on non-practice screens */}
-      {stage !== 'practice' && (
-        <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur-sm px-4 py-3 flex items-center gap-3">
-          <Link href="/dashboard" className="flex items-center gap-1.5 text-sm text-[#64748B] hover:text-[#1E1B4B]">
-            <ChevronLeft className="h-4 w-4" />
-            Dashboard
-          </Link>
-          <span className="text-slate-200">·</span>
-          <div className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-[#4F46E5]" />
-            <span className="text-sm font-semibold text-[#1E1B4B]">Fluency Coach</span>
-          </div>
-          <Badge className="ml-auto bg-[#4F46E5]/10 text-[#4F46E5] border-0 text-xs">Beta</Badge>
-        </header>
-      )}
+    <AppShell>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0a0f]">
+
 
       {stage === 'setup' && (
         <SetupScreen
@@ -517,5 +505,6 @@ export default function FluencyCoachPage() {
         />
       )}
     </div>
+    </AppShell>
   )
 }

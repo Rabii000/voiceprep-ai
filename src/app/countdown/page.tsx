@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { AppShell } from '@/components/AppShell'
 
 interface InterviewEvent {
   id: string
@@ -134,17 +135,11 @@ export default function CountdownPage() {
   const todayDone = todayTasks.filter((_, i) => doneTasks.has(`today-${i}`)).length
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur-sm px-4 py-3 flex items-center gap-3">
-        <Link href="/dashboard" className="flex items-center gap-1.5 text-sm text-[#64748B] hover:text-[#1E1B4B]">
-          <ChevronLeft className="h-4 w-4" /> Dashboard
-        </Link>
-        <span className="text-slate-200">·</span>
-        <Calendar className="h-4 w-4 text-[#4F46E5]" />
-        <span className="text-sm font-semibold text-[#1E1B4B]">Interview Countdown</span>
-      </header>
+    <AppShell>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0a0f]">
 
       <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">
+        <h1 className="text-lg font-bold text-slate-900 dark:text-white">Interview Countdown</h1>
 
         {/* Interview selector */}
         <div className="flex gap-2 flex-wrap">
@@ -198,7 +193,7 @@ export default function CountdownPage() {
         {active && (
           <>
             {/* Countdown hero */}
-            <Card className={`border-2 shadow-sm overflow-hidden ${days <= 1 ? 'border-[#EF4444]/40' : days <= 3 ? 'border-[#F59E0B]/40' : 'border-[#4F46E5]/20'}`}>
+            <Card className={`border-2 shadow-sm overflow-hidden dark:bg-slate-900 ${days <= 1 ? 'border-[#EF4444]/40' : days <= 3 ? 'border-[#F59E0B]/40' : 'border-[#4F46E5]/20'}`}>
               <div className={`h-1.5 ${days <= 1 ? 'bg-[#EF4444]' : days <= 3 ? 'bg-[#F59E0B]' : 'bg-[#4F46E5]'}`}
                 style={{ width: `${Math.max(10, 100 - (days / 14) * 100)}%`, transition: 'width 1s ease' }} />
               <CardContent className="p-6">
@@ -287,5 +282,6 @@ export default function CountdownPage() {
         )}
       </div>
     </div>
+    </AppShell>
   )
 }

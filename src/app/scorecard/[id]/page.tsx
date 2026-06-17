@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import { AppShell } from '@/components/AppShell'
 
 const SCORECARD_DATA = {
   overall: 78,
@@ -126,16 +127,17 @@ export default function ScorecardPage() {
   const data = SCORECARD_DATA
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <AppShell>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0a0f]">
       {/* Header */}
-      <header className="border-b border-slate-200 bg-white px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-        <Link href="/dashboard" className="flex items-center gap-2 text-sm text-[#64748B] hover:text-[#1E1B4B]">
+      <header className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111118] px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+        <Link href="/dashboard" className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
           <ChevronLeft className="h-4 w-4" />
           Dashboard
         </Link>
         <div className="text-center">
-          <p className="text-sm font-semibold text-[#1E1B4B]">{data.role} · {data.company}</p>
-          <p className="text-xs text-[#64748B]">{data.date} · {data.duration} · {data.mode}</p>
+          <p className="text-sm font-semibold text-slate-900 dark:text-white">{data.role} · {data.company}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{data.date} · {data.duration} · {data.mode}</p>
         </div>
         <Link href="/session">
           <Button size="sm" className="bg-[#4F46E5] hover:bg-[#4338CA] text-white">
@@ -147,7 +149,7 @@ export default function ScorecardPage() {
 
       <div className="mx-auto max-w-5xl px-4 py-8">
         <Tabs defaultValue="overview">
-          <TabsList className="mb-8 bg-white border border-slate-200 p-1 rounded-xl">
+          <TabsList className="mb-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-1 rounded-xl">
             <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-[#4F46E5] data-[state=active]:text-white">
               <BarChart3 className="mr-1.5 h-3.5 w-3.5" />Overview
             </TabsTrigger>
@@ -168,7 +170,7 @@ export default function ScorecardPage() {
           {/* OVERVIEW TAB */}
           <TabsContent value="overview">
             {/* Score hero */}
-            <Card className="border-slate-200 shadow-sm mb-6">
+            <Card className="border-slate-200 dark:border-slate-800 dark:bg-slate-900 shadow-sm mb-6">
               <CardContent className="p-8">
                 <div className="flex flex-col sm:flex-row items-center gap-8">
                   <div className="flex flex-col items-center">
@@ -500,5 +502,6 @@ export default function ScorecardPage() {
         </Tabs>
       </div>
     </div>
+    </AppShell>
   )
 }

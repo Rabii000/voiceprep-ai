@@ -6,6 +6,7 @@ import { ChevronLeft, Mic, MicOff, Zap, RotateCcw, ChevronRight, CheckCircle2, X
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { AppShell } from '@/components/AppShell'
 
 const DRILL_BANK = [
   { id: '1', text: 'Tell me about a time you failed and what you learned.', category: 'behavioral', difficulty: 3 },
@@ -148,20 +149,8 @@ export default function QuickDrillPage() {
   const retryCount = results.filter(r => r.rating === 'retry').length
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur-sm px-4 py-3 flex items-center gap-3">
-        <Link href="/dashboard" className="flex items-center gap-1.5 text-sm text-[#64748B] hover:text-[#1E1B4B]">
-          <ChevronLeft className="h-4 w-4" /> Dashboard
-        </Link>
-        <span className="text-slate-200">·</span>
-        <Zap className="h-4 w-4 text-[#F59E0B]" />
-        <span className="text-sm font-semibold text-[#1E1B4B]">Quick Drill</span>
-        {state === 'running' && (
-          <div className="ml-auto flex items-center gap-2">
-            <span className="text-xs text-[#64748B]">{currentIdx + 1}/{queue.length}</span>
-          </div>
-        )}
-      </header>
+    <AppShell>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0a0f]">
 
       <div className="mx-auto max-w-md px-4 py-8">
 
@@ -171,8 +160,8 @@ export default function QuickDrillPage() {
             <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#F59E0B]/10">
               <Zap className="h-10 w-10 text-[#F59E0B]" />
             </div>
-            <h1 className="text-2xl font-bold text-[#1E1B4B] mb-2">Quick Drill</h1>
-            <p className="text-sm text-[#64748B] mb-8 leading-relaxed">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Quick Drill</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
               8 random questions. 60 seconds each. Answer cold — no preparation. Rate yourself
               honestly, and we'll flag the ones to retry in your next Fluency Coach session.
             </p>
@@ -219,9 +208,9 @@ export default function QuickDrillPage() {
               <DifficultyDots level={current.difficulty} />
             </div>
 
-            <Card className="border-slate-200 shadow-sm mb-6">
+            <Card className="border-slate-200 dark:border-slate-800 dark:bg-slate-900 shadow-sm mb-6">
               <CardContent className="p-6">
-                <p className="text-lg font-semibold text-[#1E1B4B] leading-relaxed">
+                <p className="text-lg font-semibold text-slate-900 dark:text-white leading-relaxed">
                   "{current.text}"
                 </p>
               </CardContent>
@@ -275,22 +264,22 @@ export default function QuickDrillPage() {
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#4F46E5]/10">
                 <span className="text-2xl font-bold text-[#4F46E5]">{goodCount}/{results.length}</span>
               </div>
-              <h2 className="text-xl font-bold text-[#1E1B4B]">Drill complete</h2>
-              <p className="text-sm text-[#64748B] mt-1">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Drill complete</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                 {goodCount} nailed · {results.filter(r => r.rating === 'ok').length} ok · {retryCount} to retry
               </p>
             </div>
 
             <div className="space-y-2 mb-8">
               {results.map((r, i) => (
-                <div key={i} className="flex items-center gap-3 rounded-lg border border-slate-100 px-3 py-2.5">
+                <div key={i} className="flex items-center gap-3 rounded-lg border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2.5">
                   {r.rating === 'good'
                     ? <CheckCircle2 className="h-4 w-4 text-[#10B981] flex-shrink-0" />
                     : r.rating === 'ok'
                     ? <div className="h-4 w-4 rounded-full border-2 border-[#F59E0B] flex-shrink-0" />
                     : <XCircle className="h-4 w-4 text-[#EF4444] flex-shrink-0" />
                   }
-                  <p className="text-xs text-[#1E1B4B] flex-1 truncate">{r.text}</p>
+                  <p className="text-xs text-slate-900 dark:text-white flex-1 truncate">{r.text}</p>
                   <CategoryBadge cat={r.category} />
                 </div>
               ))}
@@ -321,5 +310,6 @@ export default function QuickDrillPage() {
         )}
       </div>
     </div>
+    </AppShell>
   )
 }
