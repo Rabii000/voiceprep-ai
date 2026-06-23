@@ -118,24 +118,52 @@ function SetupScreen({
 
   const removeRow = (id: string) => onChange(pairs.filter(p => p.id !== id))
 
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+
+  const parseQAPairs = (text: string): QAPair[] => {
+    const blocks = text.split(/\n\s*\n/).filter(Boolean)
+    return blocks.flatMap(block => {
+      const qMatch = block.match(/Q[:\.]?\s*(.+)/i)
+      const aMatch = block.match(/A[:\.]?\s*([\s\S]+)/i)
+      if (!qMatch || !aMatch) return []
+      return [{ id: crypto.randomUUID(), question: qMatch[1].trim(), answer: aMatch[1].trim(), sessions: 0, mastery: 0 }]
+    })
+  }
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => {
-      const text = reader.result as string
-      // Parse simple Q: / A: format
-      const blocks = text.split(/\n\s*\n/).filter(Boolean)
-      const parsed: QAPair[] = blocks.flatMap(block => {
-        const qMatch = block.match(/Q[:\.]?\s*(.+)/i)
-        const aMatch = block.match(/A[:\.]?\s*([\s\S]+)/i)
-        if (!qMatch || !aMatch) return []
-        return [{ id: crypto.randomUUID(), question: qMatch[1].trim(), answer: aMatch[1].trim(), sessions: 0, mastery: 0 }]
-      })
-      if (parsed.length) onChange([...pairs, ...parsed])
-    }
-    reader.readAsText(file)
     e.target.value = ''
+    if (!file) return
+    setUploadError(null)
+
+    if (file.type === 'application/pdf') {
+      setUploading(true)
+      try {
+        const form = new FormData()
+        form.append('file', file)
+        const res = await fetch('/api/parse-pdf', { method: 'POST', body: form })
+        const data = await res.json()
+        if (!res.ok) { setUploadError(data.error ?? 'Failed to parse PDF'); return }
+        const parsed = parseQAPairs(data.text)
+        if (parsed.length) {
+          onChange([...pairs, ...parsed])
+        } else {
+          setUploadError('No Q:/A: pairs found in the PDF. Make sure each pair follows the "Q: … A: …" format with a blank line between pairs.')
+        }
+      } catch {
+        setUploadError('Upload failed. Please try again.')
+      } finally {
+        setUploading(false)
+      }
+    } else {
+      const reader = new FileReader()
+      reader.onload = () => {
+        const parsed = parseQAPairs(reader.result as string)
+        if (parsed.length) onChange([...pairs, ...parsed])
+      }
+      reader.readAsText(file)
+    }
   }
 
   const ready = pairs.some(p => p.question.trim() && p.answer.trim())
@@ -171,13 +199,28 @@ function SetupScreen({
       {/* Upload banner */}
       <button
         onClick={() => fileRef.current?.click()}
-        className="mb-4 w-full rounded-xl border-2 border-dashed border-[#4F46E5]/30 bg-[#4F46E5]/3 py-5 text-center hover:border-[#4F46E5]/60 hover:bg-[#4F46E5]/6 transition-colors"
+        disabled={uploading}
+        className="mb-1 w-full rounded-xl border-2 border-dashed border-[#4F46E5]/30 bg-[#4F46E5]/3 py-5 text-center hover:border-[#4F46E5]/60 hover:bg-[#4F46E5]/6 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        <Upload className="mx-auto mb-1.5 h-5 w-5 text-[#4F46E5]" />
-        <p className="text-sm font-medium text-[#4F46E5]">Upload a .txt file</p>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Format: Q: question / A: answer — one pair per blank line</p>
+        {uploading ? (
+          <>
+            <div className="mx-auto mb-1.5 h-5 w-5 animate-spin rounded-full border-2 border-[#4F46E5] border-t-transparent" />
+            <p className="text-sm font-medium text-[#4F46E5]">Reading PDF…</p>
+          </>
+        ) : (
+          <>
+            <Upload className="mx-auto mb-1.5 h-5 w-5 text-[#4F46E5]" />
+            <p className="text-sm font-medium text-[#4F46E5]">Upload a PDF or .txt file</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Format: Q: question / A: answer — one pair per blank line</p>
+          </>
+        )}
       </button>
-      <input ref={fileRef} type="file" accept=".txt,.md" className="hidden" onChange={handleFile} />
+      {uploadError && (
+        <p className="mb-3 rounded-lg bg-[#EF4444]/8 border border-[#EF4444]/20 px-3 py-2 text-xs text-[#EF4444]">
+          {uploadError}
+        </p>
+      )}
+      <input ref={fileRef} type="file" accept=".txt,.md,.pdf,application/pdf" className="hidden" onChange={handleFile} />
 
       {/* Q&A Pairs */}
       <div className="space-y-4 mb-6">
@@ -242,6 +285,53 @@ function SetupScreen({
 
 // ─── Practice Screen ──────────────────────────────────────────────────────────
 
+// ─── Waveform bars ────────────────────────────────────────────────────────────
+
+function WaveformBars({ analyser }: { analyser: AnalyserNode | null }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const rafRef = useRef<number>(0)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas || !analyser) return
+    const ctx = canvas.getContext('2d')!
+    const bufLen = analyser.frequencyBinCount
+    const buf = new Uint8Array(bufLen)
+
+    const draw = () => {
+      rafRef.current = requestAnimationFrame(draw)
+      analyser.getByteFrequencyData(buf)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      const barW = 3
+      const gap = 2
+      const bars = Math.floor(canvas.width / (barW + gap))
+      const step = Math.floor(bufLen / bars)
+      for (let i = 0; i < bars; i++) {
+        const val = buf[i * step] / 255
+        const h = Math.max(4, val * canvas.height)
+        const x = i * (barW + gap)
+        const y = (canvas.height - h) / 2
+        ctx.fillStyle = `rgba(239,68,68,${0.4 + val * 0.6})`
+        ctx.roundRect(x, y, barW, h, 1.5)
+        ctx.fill()
+      }
+    }
+    draw()
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [analyser])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={220}
+      height={48}
+      className="rounded-xl"
+    />
+  )
+}
+
+// ─── Practice Screen ──────────────────────────────────────────────────────────
+
 function PracticeScreen({
   pairs,
   onComplete,
@@ -250,28 +340,100 @@ function PracticeScreen({
   onComplete: (results: QAPair[]) => void
 }) {
   const [idx, setIdx] = useState(0)
-  const [listening, setListening] = useState(false)
+  const [recState, setRecState] = useState<'idle' | 'recording' | 'recorded'>('idle')
   const [showAnswer, setShowAnswer] = useState(true)
   const [scores, setScores] = useState<Record<string, number>>({})
+  const [permError, setPermError] = useState<string | null>(null)
+  const [analyser, setAnalyser] = useState<AnalyserNode | null>(null)
+  const [playbackUrl, setPlaybackUrl] = useState<string | null>(null)
+
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+  const chunksRef = useRef<Blob[]>([])
 
   const current = pairs[idx]
   const visibility = scriptVisibilityForSessions(current.sessions)
+
+  // Clean up on question change
+  useEffect(() => {
+    return () => {
+      if (playbackUrl) URL.revokeObjectURL(playbackUrl)
+    }
+  }, [playbackUrl])
+
+  const stopStream = () => {
+    streamRef.current?.getTracks().forEach(t => t.stop())
+    streamRef.current = null
+    setAnalyser(null)
+  }
+
+  const startRecording = async () => {
+    setPermError(null)
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      streamRef.current = stream
+
+      // Build analyser for waveform
+      const audioCtx = new AudioContext()
+      const source = audioCtx.createMediaStreamSource(stream)
+      const an = audioCtx.createAnalyser()
+      an.fftSize = 256
+      source.connect(an)
+      setAnalyser(an)
+
+      chunksRef.current = []
+      const mr = new MediaRecorder(stream)
+      mr.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data) }
+      mr.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
+        setPlaybackUrl(URL.createObjectURL(blob))
+        stopStream()
+        setRecState('recorded')
+      }
+      mr.start()
+      mediaRecorderRef.current = mr
+      setRecState('recording')
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
+      if (msg.includes('Permission') || msg.includes('NotAllowed') || msg.includes('denied')) {
+        setPermError('Microphone access denied. Allow microphone in your browser settings and try again.')
+      } else {
+        setPermError('Could not access microphone. Check that no other app is using it.')
+      }
+    }
+  }
+
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop()
+    mediaRecorderRef.current = null
+  }
+
+  const resetRecording = () => {
+    if (playbackUrl) URL.revokeObjectURL(playbackUrl)
+    setPlaybackUrl(null)
+    setRecState('idle')
+  }
+
+  const handleMicClick = () => {
+    if (recState === 'idle') startRecording()
+    else if (recState === 'recording') stopRecording()
+  }
 
   const answerDisplay = () => {
     if (!showAnswer) return null
     if (visibility === 'full') return current.answer
     if (visibility === 'keywords') return extractKeywords(current.answer)
-    return null // hidden — from memory
+    return null
   }
 
   const markAnswer = (score: number) => {
+    resetRecording()
     setScores(prev => ({ ...prev, [current.id]: score }))
     if (idx < pairs.length - 1) {
       setIdx(idx + 1)
-      setListening(false)
+      setRecState('idle')
       setShowAnswer(true)
     } else {
-      // Build updated pairs with new mastery scores
       const updated = pairs.map(p => {
         const s = scores[p.id] ?? (p.id === current.id ? score : 50)
         const newMastery = Math.min(100, Math.round((p.mastery * p.sessions + s) / (p.sessions + 1)))
@@ -281,15 +443,13 @@ function PracticeScreen({
     }
   }
 
-  const progressPct = ((idx) / pairs.length) * 100
+  const progressPct = (idx / pairs.length) * 100
 
   return (
     <div className="min-h-screen bg-[#0f0e1e] flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-3 border-b border-white/8">
-        <span className="text-xs text-white/40 font-mono">
-          {idx + 1} / {pairs.length}
-        </span>
+        <span className="text-xs text-white/40 font-mono">{idx + 1} / {pairs.length}</span>
         <div className="w-32">
           <Progress value={progressPct} className="h-1 bg-white/10" />
         </div>
@@ -306,12 +466,10 @@ function PracticeScreen({
         {/* Question */}
         <div className="mb-6">
           <p className="text-xs text-white/40 uppercase tracking-widest mb-3">Question</p>
-          <p className="text-lg font-semibold text-white leading-relaxed">
-            "{current.question}"
-          </p>
+          <p className="text-lg font-semibold text-white leading-relaxed">"{current.question}"</p>
         </div>
 
-        {/* Answer display area */}
+        {/* Answer display */}
         <div className="flex-1 mb-6">
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs text-white/40 uppercase tracking-widest">
@@ -354,28 +512,64 @@ function PracticeScreen({
           )}
         </div>
 
-        {/* Mic button */}
-        <div className="flex flex-col items-center gap-6">
-          <button
-            onClick={() => setListening(l => !l)}
-            className={`relative flex h-20 w-20 items-center justify-center rounded-full transition-all ${
-              listening
-                ? 'bg-[#EF4444] shadow-[0_0_0_0_rgba(239,68,68,0.7)]'
-                : 'bg-[#4F46E5] hover:bg-[#4338CA]'
-            }`}
-            style={listening ? { animation: 'pulse-ring 2s infinite' } : {}}
-          >
-            {listening ? (
-              <MicOff className="h-8 w-8 text-white" />
-            ) : (
-              <Mic className="h-8 w-8 text-white" />
-            )}
-          </button>
+        {/* Recorder */}
+        <div className="flex flex-col items-center gap-5">
+
+          {/* Permission error */}
+          {permError && (
+            <div className="w-full rounded-xl border border-[#EF4444]/30 bg-[#EF4444]/8 px-4 py-3 text-xs text-[#EF4444] text-center">
+              {permError}
+            </div>
+          )}
+
+          {/* Waveform / playback */}
+          {recState === 'recording' && (
+            <div className="flex flex-col items-center gap-2">
+              <WaveformBars analyser={analyser} />
+              <p className="text-xs text-[#EF4444]/70">Recording… tap to stop</p>
+            </div>
+          )}
+
+          {recState === 'recorded' && playbackUrl && (
+            <div className="w-full rounded-xl border border-white/10 bg-white/5 p-3">
+              <p className="text-xs text-white/40 mb-2 text-center">Playback — how did you sound?</p>
+              <audio controls src={playbackUrl} className="w-full h-8" style={{ filter: 'invert(1) hue-rotate(180deg)' }} />
+              <button
+                onClick={resetRecording}
+                className="mt-2 w-full text-xs text-white/30 hover:text-white/60 transition-colors text-center"
+              >
+                Record again
+              </button>
+            </div>
+          )}
+
+          {/* Mic button */}
+          {recState !== 'recorded' && (
+            <button
+              onClick={handleMicClick}
+              className={`relative flex h-20 w-20 items-center justify-center rounded-full transition-all shadow-lg ${
+                recState === 'recording'
+                  ? 'bg-[#EF4444] scale-110'
+                  : 'bg-[#4F46E5] hover:bg-[#4338CA]'
+              }`}
+            >
+              {recState === 'recording'
+                ? <MicOff className="h-8 w-8 text-white" />
+                : <Mic className="h-8 w-8 text-white" />
+              }
+              {recState === 'recording' && (
+                <span className="absolute inset-0 rounded-full animate-ping bg-[#EF4444]/40" />
+              )}
+            </button>
+          )}
+
           <p className="text-xs text-white/30">
-            {listening ? 'Speak your answer — tap to stop' : 'Tap to start speaking'}
+            {recState === 'idle' ? 'Tap to start recording' :
+             recState === 'recording' ? 'Tap to stop' :
+             'Listen back, then rate yourself below'}
           </p>
 
-          {/* Self-rating buttons — always available */}
+          {/* Self-rating */}
           <div className="w-full">
             <p className="text-xs text-white/30 text-center mb-3">How did that feel?</p>
             <div className="grid grid-cols-3 gap-2">
