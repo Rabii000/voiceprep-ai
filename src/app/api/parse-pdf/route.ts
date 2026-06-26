@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import pdfParse from 'pdf-parse'
 
 export const runtime = 'nodejs'
+
+// pdf-parse v2 ships an ESM build without a default export; use require() to
+// force CJS resolution and avoid Turbopack's static-export check.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const pdfParse = require('pdf-parse') as (
+  buf: Buffer
+) => Promise<{ text: string; numpages: number }>
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,7 +20,7 @@ export async function POST(req: NextRequest) {
     const buf = Buffer.from(await file.arrayBuffer())
     const result = await pdfParse(buf)
     return NextResponse.json({ text: result.text, pages: result.numpages })
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: 'Failed to parse PDF' }, { status: 500 })
   }
 }
