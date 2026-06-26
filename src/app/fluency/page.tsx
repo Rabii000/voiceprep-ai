@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import Link from 'next/link'
 import {
   ChevronLeft, Upload, Plus, Trash2, Play, Pause,
   ChevronRight, ChevronDown, ChevronUp, RotateCcw,
   Mic, MicOff, CheckCircle2, AlertCircle, Eye, EyeOff,
-  BookOpen, Zap, Trophy, Target
+  BookOpen, Zap, Trophy, Target, AlignLeft, X as XIcon,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -330,6 +330,9 @@ function WaveformBars({ analyser }: { analyser: AnalyserNode | null }) {
   )
 }
 
+// ─── Teleprompter speeds: px scrolled per interval tick (60ms) ────────────────
+const TP_SPEEDS = [0.4, 0.8, 1.4] // slow / medium / fast
+
 // ─── Practice Screen ──────────────────────────────────────────────────────────
 
 function PracticeScreen({
@@ -347,12 +350,38 @@ function PracticeScreen({
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null)
   const [playbackUrl, setPlaybackUrl] = useState<string | null>(null)
 
+  // Teleprompter state
+  const [tpOn, setTpOn] = useState(false)
+  const [tpPlaying, setTpPlaying] = useState(false)
+  const [tpSpeed, setTpSpeed] = useState(1) // 0=slow 1=medium 2=fast
+  const tpScrollRef = useRef<HTMLDivElement>(null)
+  const tpTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const chunksRef = useRef<Blob[]>([])
 
   const current = pairs[idx]
   const visibility = scriptVisibilityForSessions(current.sessions)
+
+  // Teleprompter auto-scroll
+  useEffect(() => {
+    if (tpTimerRef.current) clearInterval(tpTimerRef.current)
+    if (tpOn && tpPlaying && tpScrollRef.current) {
+      const px = TP_SPEEDS[tpSpeed]
+      tpTimerRef.current = setInterval(() => {
+        tpScrollRef.current?.scrollBy({ top: px, behavior: 'instant' })
+      }, 60)
+    }
+    return () => { if (tpTimerRef.current) clearInterval(tpTimerRef.current) }
+  }, [tpOn, tpPlaying, tpSpeed])
+
+  // Reset teleprompter on question change
+  useEffect(() => {
+    setTpPlaying(false)
+    setTpOn(false)
+    if (tpScrollRef.current) tpScrollRef.current.scrollTop = 0
+  }, [idx])
 
   // Clean up on question change
   useEffect(() => {
@@ -475,15 +504,28 @@ function PracticeScreen({
             <p className="text-xs text-white/40 uppercase tracking-widest">
               {visibility === 'hidden' ? 'Your Answer (from memory)' : 'Your Script'}
             </p>
-            {visibility !== 'hidden' && (
-              <button
-                onClick={() => setShowAnswer(v => !v)}
-                className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-colors"
-              >
-                {showAnswer ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                {showAnswer ? 'Hide' : 'Show'}
-              </button>
-            )}
+            <div className="flex items-center gap-2">
+              {/* Teleprompter toggle — only in full-script mode */}
+              {visibility === 'full' && showAnswer && (
+                <button
+                  onClick={() => { setTpOn(v => !v); setTpPlaying(false); if (tpScrollRef.current) tpScrollRef.current.scrollTop = 0 }}
+                  className={`flex items-center gap-1 text-xs transition-colors ${tpOn ? 'text-[#4F46E5]' : 'text-white/30 hover:text-white/60'}`}
+                  title="Teleprompter mode"
+                >
+                  <AlignLeft className="h-3.5 w-3.5" />
+                  {tpOn ? 'Prompter on' : 'Prompter'}
+                </button>
+              )}
+              {visibility !== 'hidden' && (
+                <button
+                  onClick={() => setShowAnswer(v => !v)}
+                  className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-colors"
+                >
+                  {showAnswer ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                  {showAnswer ? 'Hide' : 'Show'}
+                </button>
+              )}
+            </div>
           </div>
 
           {visibility === 'hidden' ? (
@@ -493,6 +535,58 @@ function PracticeScreen({
                 <p className="text-sm text-[#34D399] font-medium">Session 5+ — Deliver from memory</p>
                 <p className="text-xs text-white/30 mt-1">You've practised this {current.sessions} times</p>
               </div>
+            </div>
+          ) : tpOn && visibility === 'full' && answerDisplay() ? (
+            /* ── Teleprompter view ── */
+            <div className="rounded-2xl border border-[#4F46E5]/40 bg-[#0d0c20] overflow-hidden">
+              {/* Controls bar */}
+              <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/8 bg-white/3">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setTpPlaying(p => !p)}
+                    className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors ${tpPlaying ? 'bg-[#EF4444]/20 text-[#EF4444]' : 'bg-[#4F46E5]/20 text-[#818CF8] hover:bg-[#4F46E5]/30'}`}
+                  >
+                    {tpPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+                  </button>
+                  <div className="flex items-center gap-1">
+                    {(['S', 'M', 'F'] as const).map((lbl, i) => (
+                      <button
+                        key={lbl}
+                        onClick={() => setTpSpeed(i)}
+                        className={`h-6 w-6 rounded text-[10px] font-bold transition-colors ${tpSpeed === i ? 'bg-[#4F46E5] text-white' : 'text-white/30 hover:text-white/60'}`}
+                      >
+                        {lbl}
+                      </button>
+                    ))}
+                  </div>
+                  <span className="text-[10px] text-white/20">speed</span>
+                </div>
+                <button
+                  onClick={() => { setTpOn(false); setTpPlaying(false) }}
+                  className="text-white/30 hover:text-white/60 transition-colors"
+                >
+                  <XIcon className="h-3.5 w-3.5" />
+                </button>
+              </div>
+              {/* Scrolling text */}
+              <div
+                ref={tpScrollRef}
+                className="h-52 overflow-y-hidden px-8 py-6 cursor-pointer"
+                onClick={() => setTpPlaying(p => !p)}
+              >
+                {/* Gradient fade top */}
+                <div className="pointer-events-none sticky top-0 h-8 bg-gradient-to-b from-[#0d0c20] to-transparent -mt-6 mb-2" />
+                <p className="text-white/90 text-base leading-[1.9] whitespace-pre-line text-center">
+                  {answerDisplay()}
+                </p>
+                {/* Extra bottom space so text scrolls fully into view */}
+                <div className="h-44" />
+                {/* Gradient fade bottom */}
+                <div className="pointer-events-none sticky bottom-0 h-8 bg-gradient-to-t from-[#0d0c20] to-transparent mt-2" />
+              </div>
+              <p className="text-center text-[10px] text-white/20 pb-2">
+                {tpPlaying ? 'Tap text to pause' : 'Press ▶ or tap text to start'}
+              </p>
             </div>
           ) : answerDisplay() ? (
             <div className={`rounded-2xl border p-5 leading-relaxed text-sm whitespace-pre-line transition-all ${
