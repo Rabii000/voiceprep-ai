@@ -102,12 +102,14 @@ function SetupScreen({
   onStart,
   onClear,
   saved,
+  syncing,
 }: {
   pairs: QAPair[]
   onChange: (pairs: QAPair[]) => void
   onStart: () => void
   onClear: () => void
   saved: boolean
+  syncing: boolean
 }) {
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -184,9 +186,16 @@ function SetupScreen({
           script gradually fade as you build mastery — until you can deliver every answer cold.
         </p>
         <div className="mt-3 flex items-center justify-center gap-3">
-          <span className={`inline-flex items-center gap-1 text-xs transition-opacity duration-500 ${saved ? 'opacity-100 text-[#10B981]' : 'opacity-0'}`}>
-            <CheckCircle2 className="h-3 w-3" /> Saved
-          </span>
+          {syncing ? (
+            <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+              <span className="h-3 w-3 rounded-full border border-slate-400 border-t-transparent animate-spin inline-block" />
+              Syncing…
+            </span>
+          ) : (
+            <span className={`inline-flex items-center gap-1 text-xs transition-opacity duration-500 ${saved ? 'opacity-100 text-[#10B981]' : 'opacity-0'}`}>
+              <CheckCircle2 className="h-3 w-3" /> Synced across devices
+            </span>
+          )}
           {pairs.length > 0 && (
             <button
               onClick={() => { if (confirm('Clear all Q&A pairs and start fresh?')) onClear() }}
@@ -798,14 +807,47 @@ export default function FluencyCoachPage() {
   const [stage, setStage] = useState<Stage>('setup')
   const [pairs, setPairs] = useState<QAPair[]>(() => loadSavedPairs())
   const [saved, setSaved] = useState(false)
+  const [syncing, setSyncing] = useState(false)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const initialSyncDone = useRef(false)
 
+  // On mount: fetch from Supabase and use it if non-empty (authoritative cross-device source)
+  useEffect(() => {
+    fetch('/api/fluency/cards')
+      .then(r => r.ok ? r.json() : null)
+      .then((data: { pairs?: QAPair[] } | null) => {
+        if (data?.pairs && Array.isArray(data.pairs) && data.pairs.length > 0) {
+          setPairs(data.pairs)
+          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data.pairs)) } catch {}
+        }
+        initialSyncDone.current = true
+      })
+      .catch(() => { initialSyncDone.current = true })
+  }, [])
+
+  // Save to localStorage immediately + debounce-sync to Supabase
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(pairs))
-      setSaved(true)
-      const t = setTimeout(() => setSaved(false), 1500)
-      return () => clearTimeout(t)
     } catch {}
+
+    if (!initialSyncDone.current) return
+
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
+      setSyncing(true)
+      fetch('/api/fluency/cards', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pairs }),
+      })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data?.ok) { setSaved(true); setTimeout(() => setSaved(false), 1500) }
+        })
+        .catch(() => {})
+        .finally(() => setSyncing(false))
+    }, 2000)
   }, [pairs])
 
   return (
@@ -819,6 +861,7 @@ export default function FluencyCoachPage() {
           onStart={() => setStage('practice')}
           onClear={() => setPairs([])}
           saved={saved}
+          syncing={syncing}
         />
       )}
 
