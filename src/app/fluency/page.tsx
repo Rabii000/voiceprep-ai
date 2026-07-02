@@ -100,10 +100,14 @@ function SetupScreen({
   pairs,
   onChange,
   onStart,
+  onClear,
+  saved,
 }: {
   pairs: QAPair[]
   onChange: (pairs: QAPair[]) => void
   onStart: () => void
+  onClear: () => void
+  saved: boolean
 }) {
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -179,6 +183,19 @@ function SetupScreen({
           Upload your prepared Q&amp;A pairs. Practice reading your answers aloud, then watch your
           script gradually fade as you build mastery — until you can deliver every answer cold.
         </p>
+        <div className="mt-3 flex items-center justify-center gap-3">
+          <span className={`inline-flex items-center gap-1 text-xs transition-opacity duration-500 ${saved ? 'opacity-100 text-[#10B981]' : 'opacity-0'}`}>
+            <CheckCircle2 className="h-3 w-3" /> Saved
+          </span>
+          {pairs.length > 0 && (
+            <button
+              onClick={() => { if (confirm('Clear all Q&A pairs and start fresh?')) onClear() }}
+              className="text-xs text-slate-400 hover:text-[#EF4444] transition-colors underline underline-offset-2"
+            >
+              Clear all
+            </button>
+          )}
+        </div>
       </div>
 
       {/* How it works */}
@@ -759,22 +776,49 @@ function ResultsScreen({
   )
 }
 
+// ─── Persistence ─────────────────────────────────────────────────────────────
+
+const STORAGE_KEY = 'voiceprep_fluency_v1'
+
+function loadSavedPairs(): QAPair[] {
+  if (typeof window === 'undefined') return SEED
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (raw) {
+      const parsed = JSON.parse(raw) as QAPair[]
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed
+    }
+  } catch {}
+  return SEED
+}
+
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function FluencyCoachPage() {
   const [stage, setStage] = useState<Stage>('setup')
-  const [pairs, setPairs] = useState<QAPair[]>(SEED)
+  const [pairs, setPairs] = useState<QAPair[]>(() => loadSavedPairs())
+  const [saved, setSaved] = useState(false)
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(pairs))
+      setSaved(true)
+      const t = setTimeout(() => setSaved(false), 1500)
+      return () => clearTimeout(t)
+    } catch {}
+  }, [pairs])
 
   return (
     <AppShell>
     <div className="min-h-screen bg-slate-50 dark:bg-[#0a0a0f]">
-
 
       {stage === 'setup' && (
         <SetupScreen
           pairs={pairs}
           onChange={setPairs}
           onStart={() => setStage('practice')}
+          onClear={() => setPairs([])}
+          saved={saved}
         />
       )}
 
@@ -788,7 +832,7 @@ export default function FluencyCoachPage() {
       {stage === 'results' && (
         <ResultsScreen
           pairs={pairs}
-          onReset={() => { setPairs(SEED); setStage('setup') }}
+          onReset={() => setStage('setup')}
           onRetry={() => setStage('practice')}
         />
       )}
